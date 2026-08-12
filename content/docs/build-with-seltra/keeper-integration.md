@@ -1,41 +1,54 @@
 ---
 title: "Keeper Integration"
-description: "Keepers are permissionless transaction submitters. Their core loop is:"
+description: "Keepers are permissionless submitters. The loop is quote, check profit, simulate against Soroban RPC, submit through a channel account, reconcile."
 section: "Build with Seltra"
-order: 14
+order: 20
 ---
 
-Keepers are permissionless transaction submitters. Their core loop is:
+Keepers are permissionless off-chain processes. Anyone can run one, nobody is registered, and a keeper earns only when it wins a fill.
 
 ```mermaid
 flowchart LR
-    Orders --> Quote
-    Quote --> Profit[Check reward and caps]
-    Profit --> Simulate[eth_call simulation]
-    Simulate --> Submit[Submit transaction]
-    Submit --> Reconcile[Wait and reconcile receipt]
+    Orders[Resting mandates] --> Quote[Quote allowlisted venues]
+    Quote --> Profit[Check keeper share and caps]
+    Profit --> Sim[Simulate against Soroban RPC]
+    Sim --> Submit[Submit via channel account]
+    Submit --> Rec[Reconcile result and events]
 ```
 
-### DEX fills
+## DEX fills
 
-1. Read `router.isRegistered(adapterId)`.
-2. Quote the full `makingAmount` using venue-appropriate `extra`.
-3. Require quoted output to meet `takingAmount`.
-4. Estimate keeper-side surplus and enforce minimum profit.
-5. Simulate `fillOrderDEX` at latest state.
-6. Submit only if simulation succeeds.
+1. Confirm the adapter is registered and not paused.
+2. Quote `amount_in` on each candidate venue through `SeltraRouter.quote`.
+3. Require the quoted output to be at least `min_out`.
+4. Compute the keeper share of the resulting surplus and enforce a minimum profit threshold.
+5. If the mandate is in yield mode, call `available_liquidity` on its vault and **skip** the mandate if redemption cannot be serviced.
+6. Simulate `fill_dex(order, route, keeper)` against current state.
+7. Submit only if simulation succeeds.
 
-### P2P fills
+## P2P fills
 
-Match opposite assets, exact base size, and crossed integer prices. Simulate the complete two-order call before submission.
+Match mandates with opposite assets whose prices cross, then simulate the complete `fill_p2p(order_a, order_b, keeper)` call before submission. Both authorization entries must be reconstructed exactly as their makers signed them; a mismatch is rejected by the host and caught in simulation.
 
-### Production safeguards
+## Soroban-specific operating notes
 
-* Maintain one in-flight key per order or matched pair.
-* Treat nonce races as expected failures.
-* Enforce per-order and daily notional caps.
-* Bound quote age and price deviation.
-* Alert on revert spikes, pause events, and near-limit fill streaks.
-* Use isolated funded keeper keys and explicit RPC failover.
+| Concern | What to do |
+|---|---|
+| **Sequence numbers** | A Stellar account submits one transaction per sequence number, so a single keeper account serialises submissions. Use **channel accounts** to keep several fills in flight. |
+| **Simulation is mandatory** | Simulate every candidate. A fill that would miss `min_out`, exceed resource limits, or fail on a consumed nonce should never be submitted. |
+| **Resource limits** | CPU, memory, and ledger read/write are capped per transaction. A route plus an optional vault redemption plus settlement must fit in one invocation; bound route depth rather than searching unbounded paths. |
+| **Nonce races are normal** | Two keepers racing the same mandate is expected. The loser fails on the consumed nonce, having spent a simulation and a fee. Treat it as an ordinary outcome, not an error spike. |
+| **Authorization trees** | Rebuild the invocation tree exactly as signed. A mismatch is a keeper operating cost, not a maker risk. |
+| **Event retention** | Soroban RPC keeps events for a limited window. If your keeper also feeds an indexer, ingestion must keep up or history is lost. |
 
-The reference implementation lives in `services/src/keeper.ts`.
+## Production safeguards
+
+- Keep one in-flight submission per mandate or matched pair.
+- Enforce a per-fill and a daily notional cap while rolling out.
+- Bound quote age and the deviation between the quoted and simulated output.
+- Alert on failure-rate spikes, pause events, and streaks of fills clearing at exactly `min_out`.
+- Run isolated, funded keeper accounts with explicit RPC failover. A keeper key can lose keeper funds; it can never touch a maker's mandate beyond what was signed.
+
+## What a keeper cannot do
+
+A keeper picks the timing and the allowlisted route. It cannot change the asset pair, the input ceiling, the minimum output, the epoch, the expiry, or the surplus split, because all of those are arguments of the invocation the maker authorized. A hostile keeper's worst outcome for a maker is that the mandate does not get filled.

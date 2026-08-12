@@ -1,85 +1,56 @@
 ---
 title: "Contract Addresses"
-description: "Verified contract addresses on Avalanche mainnet and Avalanche Fuji."
+description: "Published contract addresses per Stellar network. Nothing is deployed on Stellar yet; this page is the place it will be published and the shape it will take."
 section: "Networks & Deployments"
-order: 26
+order: 32
 ---
 
-## Avalanche mainnet
+**No Seltra contracts are deployed on Stellar Testnet or on the Stellar Public Network yet.** This page is where addresses are published, and it is deliberately empty rather than filled with placeholders that could be mistaken for real ones.
 
-Network: **Avalanche C-Chain**\
-Chain ID: `43114`
+Do not send funds to any address presented as a Seltra Stellar deployment until it appears here and matches the on-chain Wasm hash.
 
-### Protocol
+## Stellar Testnet
 
-| Contract                | Address                                                                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| SeltraSettlement        | [`0xbBdbb1785dB447CB04f7B2E0549b630eA7295d57`](https://snowtrace.io/address/0xbBdbb1785dB447CB04f7B2E0549b630eA7295d57) |
-| SeltraAggregationRouter | [`0x6e97Ec1E64cB059F30De68a87f383a0C8F8670d3`](https://snowtrace.io/address/0x6e97Ec1E64cB059F30De68a87f383a0C8F8670d3) |
-| LFJ adapter, ID 1       | [`0x5fbbb45aC3BEDe19069decAa8012376064eC8351`](https://snowtrace.io/address/0x5fbbb45aC3BEDe19069decAa8012376064eC8351) |
-| Blackhole adapter, ID 2 | [`0xC4952bD555f979993b7BAB800d933dC2F082836d`](https://snowtrace.io/address/0xC4952bD555f979993b7BAB800d933dC2F082836d) |
-| Pharaoh adapter, ID 3   | [`0xf7CeB84F59BF04D65801A479f4C91E217F451AA3`](https://snowtrace.io/address/0xf7CeB84F59BF04D65801A479f4C91E217F451AA3) |
-| Canonical Permit2       | [`0x000000000022D473030F116dDEE9F6B43aC78BA3`](https://snowtrace.io/address/0x000000000022D473030F116dDEE9F6B43aC78BA3) |
+Network passphrase: `Test SDF Network ; September 2015`
 
-### Governance
+| Contract | Address | Wasm hash |
+|---|---|---|
+| `SeltraSettlement` | Not deployed | — |
+| `SeltraRouter` | Not deployed | — |
+| Adapter registry | Not deployed | — |
+| First venue adapter | Not deployed | — |
 
-| Component          | Address                                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| TimelockController (48h) | [`0x2E5F8ba983dbCE1AAF396a8F6E023e9482ce9359`](https://snowtrace.io/address/0x2E5F8ba983dbCE1AAF396a8F6E023e9482ce9359) |
+## Stellar Public Network
 
-### Allowlisted pairs and tokens
+Network passphrase: `Public Global Stellar Network ; September 2015`
 
-| Pair          | Base token                                                                                                    | Quote token                                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| WAVAX/USDC    | WAVAX [`0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7`](https://snowtrace.io/address/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7) | USDC [`0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`](https://snowtrace.io/address/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E) |
-| WETH.e/WAVAX  | WETH.e [`0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB`](https://snowtrace.io/address/0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB) | WAVAX [`0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7`](https://snowtrace.io/address/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7) |
-| BTC.b/WAVAX   | BTC.b [`0x152b9d0FdC40C096757F570A51E494bd4b943E50`](https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50) | WAVAX [`0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7`](https://snowtrace.io/address/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7) |
-| USDC/USDt     | USDC [`0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`](https://snowtrace.io/address/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E) | USDt [`0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7`](https://snowtrace.io/address/0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7) |
+| Contract | Address | Wasm hash |
+|---|---|---|
+| `SeltraSettlement` | Not deployed | — |
+| `SeltraRouter` | Not deployed | — |
+| Adapter registry | Not deployed | — |
+| Venue adapters | Not deployed | — |
+| Yield adapter | Not deployed | — |
 
-<Callout type="info">
+Mainnet deployment is gated on audit remediation — see [Mainnet Status](./mainnet-status.md).
 
-WAVAX is the only representation of AVAX that Settlement and Permit2 ever see. The frontend's "Use native AVAX" funding control wraps native AVAX into this exact WAVAX address before any order is built — see the [App Trading Guide](/docs/concepts/app-trading-guide).
+## What will be published for each entry
 
-</Callout>
+An address on its own is not verifiable. Each row will carry:
 
-<Callout type="warning">
+| Field | Why it is needed |
+|---|---|
+| Contract address | Identifies the deployment |
+| Wasm hash | Lets anyone confirm the deployed code matches the reviewed source |
+| Deployment ledger and transaction hash | Establishes when it appeared, checkable on a block explorer |
+| Commit of the source it was built from | Ties the deployment to reviewable code |
 
-Source is verified on Sourcify for every mainnet contract listed above. Verification is not an audit — see [Mainnet Status](/docs/networks-and-deployments/mainnet-status).
+Contract addresses and network configuration are also published in the repository so that a service configuration and this page can be diffed against each other.
 
-</Callout>
+## Allowlisted assets
 
-## Avalanche Fuji
+Every asset moves through its SEP-41 token contract, including classic Stellar assets through their Stellar Asset Contract. The allowlisted token contracts and the pair registry for each network will be published here alongside the contracts, because a pair that is not allowlisted is not tradeable no matter what an interface shows.
 
-Network: **Avalanche Fuji**\
-Chain ID: `43113`
+## The existing production deployment
 
-### Protocol
-
-| Contract                | Address                                                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| SeltraSettlement        | [`0x962F86c218eEdEbFd2AAc6cb35b5283232769848`](https://testnet.snowtrace.io/address/0x962F86c218eEdEbFd2AAc6cb35b5283232769848) |
-| SeltraAggregationRouter | [`0xba1f5399D6A09b73206EC9449e2ba1bA7db27257`](https://testnet.snowtrace.io/address/0xba1f5399D6A09b73206EC9449e2ba1bA7db27257) |
-| Mock adapter, ID 0      | [`0xdaF27f9116801dC3afDB896721c25166A408282E`](https://testnet.snowtrace.io/address/0xdaF27f9116801dC3afDB896721c25166A408282E) |
-| Canonical Permit2       | [`0x000000000022D473030F116dDEE9F6B43aC78BA3`](https://testnet.snowtrace.io/address/0x000000000022D473030F116dDEE9F6B43aC78BA3) |
-
-### Governance
-
-| Component          | Address                                                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| Safe guardian      | [`0x14A34367a552e40B136Ac4b8c3E3970Be2d6eE77`](https://testnet.snowtrace.io/address/0x14A34367a552e40B136Ac4b8c3E3970Be2d6eE77) |
-| TimelockController | [`0xE6690Ba148951140924DEE34415C4e49ADF6c1Ea`](https://testnet.snowtrace.io/address/0xE6690Ba148951140924DEE34415C4e49ADF6c1Ea) |
-
-### Demo tokens
-
-| Token  | Decimals | Address                                                                                                                         |
-| ------ | -------: | ------------------------------------------------------------------------------------------------------------------------------- |
-| sWAVAX |       18 | [`0x760D9a5B4ae94f5e6c3ce014e3C116544515C830`](https://testnet.snowtrace.io/address/0x760D9a5B4ae94f5e6c3ce014e3C116544515C830) |
-| sUSDC  |        6 | [`0x00B766567013BbCe12bF802f6E7C65F6da581Efe`](https://testnet.snowtrace.io/address/0x00B766567013BbCe12bF802f6E7C65F6da581Efe) |
-
-<Callout type="info">
-
-The Timelock is the pending owner of Settlement and Router. Its 48-hour
-acceptance operations become executable on July 19, 2026 at 12:38 CEST. The
-temporary deployer remains owner until those delayed calls execute.
-
-</Callout>
+The same settlement design runs today on Avalanche C-Chain with verified source. Those addresses are on a different chain, in a different address format, and are **not** Stellar deployments — they are listed as delivery evidence in [Traction](../traction.md), and nowhere else, so that no reader can confuse them with a Stellar address.

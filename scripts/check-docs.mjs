@@ -16,8 +16,8 @@ const navSource = readFileSync(path.join(root, "src", "docs", "navigation.ts"), 
 const navEntries = [...navSource.matchAll(/page\(\s*"((?:[^"\\]|\\.)*)",\s*"([^"]*)",\s*"([^"]+)",\s*"([^"]+)",?\s*\)/g)].map(
   (m) => ({ title: m[1], slug: m[2], file: m[3], section: m[4] }),
 );
-if (navEntries.length !== 31) {
-  failures.push(`navigation.ts: expected 31 page() entries (30 section pages + home), found ${navEntries.length}`);
+if (navEntries.length !== 36) {
+  failures.push(`navigation.ts: expected 36 page() entries (35 section pages + home), found ${navEntries.length}`);
 }
 
 const routes = new Set(navEntries.map((e) => (e.slug === "" ? "/docs" : `/docs/${e.slug}`)));
@@ -28,37 +28,44 @@ if (new Set(files).size !== files.length) failures.push("navigation.ts: duplicat
 
 // --- nav <-> content parity ---
 for (const entry of navEntries) {
-  if (!existsSync(path.join(contentDir, `${entry.file}.mdx`))) {
-    failures.push(`navigation entry without MDX file: ${entry.file}.mdx`);
+  if (!existsSync(path.join(contentDir, `${entry.file}.md`))) {
+    failures.push(`navigation entry without content file: ${entry.file}.md`);
   }
 }
+
+/** Publishing scaffolding rather than routed pages; exempt from nav parity and frontmatter. */
+const NON_PAGE_FILES = new Set(["README.md", "SUMMARY.md"]);
+
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) return walk(full);
-    return entry.name.endsWith(".mdx") ? [full] : [];
+    if (NON_PAGE_FILES.has(entry.name)) return [];
+    return entry.name.endsWith(".md") ? [full] : [];
   });
 }
-const mdxFiles = walk(contentDir);
-for (const file of mdxFiles) {
-  const rel = path.relative(contentDir, file).replace(/\.mdx$/, "");
-  if (!files.includes(rel)) failures.push(`MDX file missing from navigation: ${rel}.mdx`);
+const docFiles = walk(contentDir);
+for (const file of docFiles) {
+  const rel = path.relative(contentDir, file).replace(/\.md$/, "");
+  if (!files.includes(rel)) failures.push(`content file missing from navigation: ${rel}.md`);
 }
 
 // --- per-file content checks ---
 const titles = new Map();
+// Delivery evidence for the live EVM implementation of the same settlement
+// design. These are Avalanche C-Chain addresses and must appear only on the
+// traction page, never where a reader could mistake them for a Stellar
+// deployment — Seltra has no Stellar addresses yet.
 const canonicalAddresses = [
-  "0x962F86c218eEdEbFd2AAc6cb35b5283232769848",
-  "0xba1f5399D6A09b73206EC9449e2ba1bA7db27257",
-  "0xdaF27f9116801dC3afDB896721c25166A408282E",
-  "0x000000000022D473030F116dDEE9F6B43aC78BA3",
-  "0x14A34367a552e40B136Ac4b8c3E3970Be2d6eE77",
-  "0xE6690Ba148951140924DEE34415C4e49ADF6c1Ea",
-  "0x760D9a5B4ae94f5e6c3ce014e3C116544515C830",
-  "0x00B766567013BbCe12bF802f6E7C65F6da581Efe",
+  "0xbBdbb1785dB447CB04f7B2E0549b630eA7295d57",
+  "0x6e97Ec1E64cB059F30De68a87f383a0C8F8670d3",
+  "0x5fbbb45aC3BEDe19069decAa8012376064eC8351",
+  "0xC4952bD555f979993b7BAB800d933dC2F082836d",
+  "0xf7CeB84F59BF04D65801A479f4C91E217F451AA3",
+  "0x2E5F8ba983dbCE1AAF396a8F6E023e9482ce9359",
 ];
 
-for (const file of mdxFiles) {
+for (const file of docFiles) {
   const rel = path.relative(contentDir, file);
   const raw = readFileSync(file, "utf8");
   const fm = raw.match(/^---\n([\s\S]*?)\n---\n/);
@@ -77,13 +84,32 @@ for (const file of mdxFiles) {
   const fenceCount = (raw.match(/^\s*```/gm) ?? []).length;
   if (fenceCount % 2 !== 0) failures.push(`${rel}: unclosed fenced code block`);
 
+  // Pages cross-link with relative .md paths so the same source works both on
+  // the site and when content/docs is published as a standalone space. Site
+  // routes are produced at render time, so an absolute /docs link is drift.
   for (const link of raw.matchAll(/\]\((\/docs[^)#\s]*)/g)) {
-    if (!routes.has(link[1])) failures.push(`${rel}: broken internal link ${link[1]}`);
+    failures.push(`${rel}: absolute site link ${link[1]} — use a relative .md path instead`);
+  }
+  for (const link of raw.matchAll(/\]\((\.\.?\/[^)\s#]*\.md)/g)) {
+    const target = path.posix.normalize(path.posix.join(path.posix.dirname(rel), link[1]));
+    if (!existsSync(path.join(contentDir, target))) {
+      failures.push(`${rel}: broken relative link ${link[1]}`);
+      continue;
+    }
+    const slug = target.replace(/\.md$/, "").replace(/(^|\/)index$/, "");
+    const route = slug === "" ? "/docs" : `/docs/${slug}`;
+    if (!routes.has(route)) failures.push(`${rel}: link ${link[1]} resolves outside the navigation`);
   }
 
-  if (rel === "networks-and-deployments/contract-addresses.mdx") {
+  if (rel === "traction.md") {
     for (const address of canonicalAddresses) {
       if (!raw.includes(address)) failures.push(`${rel}: missing canonical address ${address}`);
+    }
+  } else {
+    for (const address of canonicalAddresses) {
+      if (raw.includes(address)) {
+        failures.push(`${rel}: EVM delivery-evidence address ${address} belongs only on traction.md`);
+      }
     }
   }
 }
@@ -115,4 +141,4 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`  - ${failure}`);
   process.exit(1);
 }
-console.log(`docs:check passed: ${navEntries.length} routes, ${mdxFiles.length} MDX files, links/frontmatter/fences/brand clean`);
+console.log(`docs:check passed: ${navEntries.length} routes, ${docFiles.length} content files, links/frontmatter/fences/brand clean`);

@@ -13,7 +13,7 @@ import { ContractAddress } from "@/components/docs/contract-address";
 import { DocsPagination } from "@/components/docs/docs-pagination";
 import { DocsToc } from "@/components/docs/docs-toc";
 import { MermaidDiagram } from "@/components/docs/mermaid-diagram";
-import { loadDoc } from "@/docs/content";
+import { loadDoc, rewriteDocLinks } from "@/docs/content";
 import { routeForSlug } from "@/docs/navigation";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -86,7 +86,7 @@ export default async function DocPage({ params }: { params: { slug?: string[] } 
     description: doc.frontmatter.description,
     url: canonical,
     isPartOf: { "@type": "WebSite", name: "Seltra", url: appUrl },
-    about: "Seltra — wallet-native limit orders on Avalanche",
+    about: "Seltra — programmable order execution on Soroban",
   };
 
   return (
@@ -96,7 +96,7 @@ export default async function DocPage({ params }: { params: { slug?: string[] } 
         <h1>{doc.frontmatter.title}</h1>
         {doc.frontmatter.description ? <p className="docs-lede">{doc.frontmatter.description}</p> : null}
         <MDXRemote
-          source={liftMermaid(doc.body)}
+          source={liftMermaid(rewriteDocLinks(doc.body, doc.page.file))}
           components={mdxComponents}
           options={{
             mdxOptions: {

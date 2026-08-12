@@ -1,51 +1,62 @@
 ---
 title: "App Trading Guide"
-description: "How the Seltra app maps Limit, Market, and Grid orders onto the underlying protocol, and how native AVAX funding works."
+description: "How the Seltra app maps Limit, Market, Grid, and DCA onto mandates, how expiry and slippage bounds are computed, and what the app shows before you sign."
 section: "Concepts"
-order: 9
+order: 15
 ---
 
-This page covers app-level behavior that sits on top of the [Order Model](/docs/concepts/order-model): Limit vs. Market pricing, native AVAX funding, custom expiry, mobile market switching, and pair-specific stats.
+This page covers app-level behaviour that sits on top of the [Order Model](./order-model.md). Everything here is interface policy — the contract enforces only what the mandate says.
 
-### Limit price shortcuts vs. Market slippage
+## Limit price shortcuts are not slippage
 
-These are two different concepts, and the app labels them differently on purpose:
+These are two different concepts and the app labels them differently on purpose.
 
-* **Limit orders have no slippage.** The limit price you sign is already the worst price you will accept — the order simply never fills below it. The **Price shortcuts** row (Mid, −1%, +1%) sets the limit price relative to the current reference price; it does not add any additional bound.
-* **Market orders sign a marketable limit with an explicit slippage bound.** Choose a preset (0.1% / 0.5% / 1.0%) or **Custom**, entered as a percentage with up to two decimal places (a whole number of basis points). The app converts your input to basis points with exact integer arithmetic — never floating-point multiplication — and rejects empty, non-numeric, zero, negative, or ≥100% input instead of silently adjusting it. 5% or higher shows a visible warning, but is still accepted if you confirm it. The order summary always shows both the live executable reference price and the exact worst acceptable price that gets signed. A market order still expires in 10 minutes if unfilled.
+- **Limit orders have no slippage.** The limit price you sign becomes `min_out`, which is already the worst price you will accept — the order simply never fills below it. The price shortcuts row (Mid, −1%, +1%) sets that limit relative to the current reference price. It adds no separate bound.
+- **Market orders sign a marketable limit with an explicit slippage bound.** Choose a preset (0.1% / 0.5% / 1.0%) or enter a custom percentage with up to two decimal places. The app converts the input to basis points with exact integer arithmetic — never floating-point multiplication — and rejects empty, non-numeric, zero, negative, or ≥100% input instead of silently adjusting it. 5% or higher shows a visible warning and is accepted only on confirmation.
 
-### Custom expiry
+The order summary always shows both the live executable reference price and the exact worst acceptable output that gets signed. A market order carries a short expiry so an unfilled one does not linger.
 
-Limit and Grid orders share one expiry control: pick a preset or **Custom**, entered in days (decimals allowed, e.g. `0.5` for 12 hours). The maximum is derived from the deployment's configured policy — **7 days (604,800 seconds) at mainnet launch** — and is never silently clamped: an over-limit value shows an inline error and blocks Review/Preview until it's fixed. The computed expiry date and time is shown under the field. Market orders are exempt — they always expire in 10 minutes.
+## Expiry is bounded by the network, not only by policy
 
-### Native AVAX funding
+Limit, Grid, and DCA orders share one expiry control: pick a preset or enter a custom value in days. Two limits apply, and the app enforces the tighter one:
 
-Seltra Settlement and Permit2 only ever operate on the WAVAX ERC-20 — **native AVAX is never an order asset, and it never appears as `address(0)` in an order, API request, pair registry, or signature.** On any pair with a WAVAX leg (`WAVAX/USDC`, `WETH.e/WAVAX`, `BTC.b/WAVAX`), the order form and Grid form show a compact **"Use native AVAX"** toggle next to that leg's balance instead of duplicating every market entry with an AVAX-labeled twin.
+| Limit | Source |
+|---|---|
+| The deployment's configured maximum order lifetime | Seltra policy |
+| The maximum signature expiration ledger the network allows | Stellar network configuration |
 
-When the toggle is on:
+An over-limit value shows an inline error and blocks the review step rather than being silently clamped. The computed expiry — as a date and time, and as a ledger sequence — is shown under the field.
 
-1. The app determines how much WAVAX the order (or the Grid's budget) needs.
-2. It nets that against WAVAX you already hold.
-3. It wraps **only the missing amount** by calling WAVAX's `deposit()` with that exact native value — never more.
-4. It waits for on-chain confirmation, then refreshes your AVAX balance, WAVAX balance, and Permit2 allowance before continuing.
-5. Only then does the normal Permit2 approval and signing flow proceed.
+Because a Soroban authorization entry cannot be set to expire arbitrarily far ahead, **there is no good-till-cancelled order**. The app shows the real expiry, and long-dated positions are maintained by re-signing on a rolling basis rather than by pretending an order is open-ended. See [Soroban Authorization](./soroban-authorization.md).
 
-The call-to-action button reflects this explicitly as it progresses: **Wrap AVAX → Wrapping AVAX… → Approve WAVAX → Place order** (or **Sign N orders** for a Grid). Nothing is wrapped silently, and a rejected, reverted, or timed-out wrap transaction is reported plainly rather than retried automatically. **MAX** never spends the AVAX needed for gas — the app estimates the wrap transaction's gas cost plus headroom for the approval transaction that follows, and reserves that amount before offering the rest as spendable.
+## Assets and balances
 
-<Callout type="warning">
+Every asset is moved through its SEP-41 token contract, including classic Stellar assets via their Stellar Asset Contract. The app shows the token contract address for each side of the pair in the order summary, so what you sign is checkable against [Contract Addresses](../networks-and-deployments/contract-addresses.md).
 
-Receiving native AVAX is different from paying with it. When WAVAX is the asset you receive from a fill, Settlement transfers the WAVAX ERC-20 — **not native AVAX automatically.** The order summary says so explicitly. An optional, separate **Unwrap** action is available from the Balances view once you hold WAVAX; there is no automatic or silent unwrapping.
+**MAX never spends the reserve you need to keep the account usable.** The app subtracts the account's minimum balance reserve and an allowance for the fees of the transactions that follow before offering the rest as spendable.
 
-</Callout>
+## Signing
 
-### Mobile market switching
+Wallet connection uses Stellar Wallets Kit, with Freighter and xBull as the first-class targets. What you approve in the wallet is one authorization entry for `execute(order)` — not a transfer, not an approval, and not an open-ended allowance. Placing an order costs no fee; the keeper pays the fee for the fill it wins.
 
-The market/pair selector is a dedicated `MarketSwitcher` component — a popover on desktop, a bottom sheet on mobile — and it is never hidden by responsive CSS at any width, including 320px. It supports full keyboard navigation (arrow keys, Home/End, Enter, Escape) and closes on an outside click. From the Trade view, choosing a pair navigates to that pair's terminal; from the Stats view, choosing a pair updates the page in place instead of navigating away.
+For a Grid or a DCA schedule, the app collects one batch of signatures covering every child mandate, and shows how many mandates are in the batch before you sign. See [Strategies](./strategies-grid-and-dca.md).
 
-### Pair-specific stats
+## Cancelling from the app
 
-The Stats page reads and writes its pair scope through the URL (`/stats?pair=<canonical-pair-id>`), so a stats view for one market is shareable as a link. Selecting a pair from Stats never navigates to Trade. Display-pair aliases that reference AVAX (e.g. `AVAX-USDC`) resolve to their canonical WAVAX pair before any request is made. When viewing **All markets**, volume is never summed across pairs that quote in different tokens — it either collapses to one figure when every pair happens to share a quote token, or is shown broken out per quote token.
+| Action | What actually happens | Trustless |
+|---|---|---|
+| Cancel one order | The app withdraws it from the orderbook | No — the mandate is dead only when the epoch moves or expiry passes |
+| Cancel all / cancel strategy | The wallet signs `increment_epoch()` | Yes |
+| Let it expire | Nothing; the mandate dies at its expiry ledger | Yes |
 
-### Venue availability per pair
+The app states this distinction where the buttons are, rather than presenting a single-order cancel as final.
 
-The chart's venue legend is driven entirely by live quotes: the orderbook API polls every configured DEX adapter for every pair and simply omits a venue when its on-chain quote reverts. `BTC.b/WAVAX` has no LFJ liquidity route at mainnet launch, so its legend shows only **Blackhole** and **Pharaoh** — this is real venue availability, not a frontend override, and no venue is ever hardcoded into the legend.
+## Yield toggle
+
+A mandate can opt in to earning while it rests. The toggle sits next to the funding leg, names the vault, shows the per-vault exposure cap, and states plainly that the capital leaves your account and takes on that vault's risk. It is off by default. See [Yield on Resting Capital](./yield-on-resting-capital.md).
+
+A mandate whose vault cannot currently service redemption is shown as *waiting on liquidity* — not as filled, and not as cancelled.
+
+## Venue availability per pair
+
+The chart's venue legend is driven entirely by live quotes: the orderbook API polls every configured adapter for every pair and omits a venue when its on-chain quote reverts, because a missing pool or empty liquidity is real venue availability rather than a display choice. No venue is hardcoded into the legend.

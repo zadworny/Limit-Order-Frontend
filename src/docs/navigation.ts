@@ -7,14 +7,14 @@ export interface DocPage {
   title: string;
   /** Route under /docs; "" is the docs homepage. */
   slug: string;
-  /** MDX path under content/docs, without extension. */
+  /** Markdown path under content/docs, without extension. */
   file: string;
   section: string;
 }
 
 export interface DocSection {
   title: string;
-  /** Section landing page slug. */
+  /** Section landing page slug, or a group id when the section has no landing page. */
   slug: string;
   pages: DocPage[];
 }
@@ -28,13 +28,26 @@ const page = (title: string, slug: string, file: string, section: string): DocPa
 
 export const docsSections: DocSection[] = [
   {
+    title: "Product",
+    slug: "product",
+    pages: [
+      page("Traction", "traction", "traction", "Docs"),
+      page("Roadmap", "roadmap", "roadmap", "Docs"),
+    ],
+  },
+  {
     title: "Concepts",
     slug: "concepts",
     pages: [
       page("Concepts", "concepts", "concepts/index", "Concepts"),
       page("How Seltra Works", "concepts/how-seltra-works", "concepts/how-seltra-works", "Concepts"),
       page("Order Model", "concepts/order-model", "concepts/order-model", "Concepts"),
-      page("Permit2 Signatures", "concepts/permit2-signatures", "concepts/permit2-signatures", "Concepts"),
+      page(
+        "Soroban Authorization",
+        "concepts/soroban-authorization",
+        "concepts/soroban-authorization",
+        "Concepts",
+      ),
       page("DEX Settlement", "concepts/dex-settlement", "concepts/dex-settlement", "Concepts"),
       page("P2P Settlement", "concepts/p2p-settlement", "concepts/p2p-settlement", "Concepts"),
       page(
@@ -50,6 +63,19 @@ export const docsSections: DocSection[] = [
         "Concepts",
       ),
       page(
+        "Strategies: Grid & DCA",
+        "concepts/strategies-grid-and-dca",
+        "concepts/strategies-grid-and-dca",
+        "Concepts",
+      ),
+      page("Agents & MCP", "concepts/agents-and-mcp", "concepts/agents-and-mcp", "Concepts"),
+      page(
+        "Yield on Resting Capital",
+        "concepts/yield-on-resting-capital",
+        "concepts/yield-on-resting-capital",
+        "Concepts",
+      ),
+      page(
         "App Trading Guide",
         "concepts/app-trading-guide",
         "concepts/app-trading-guide",
@@ -62,7 +88,12 @@ export const docsSections: DocSection[] = [
     slug: "build-with-seltra",
     pages: [
       page("Build with Seltra", "build-with-seltra", "build-with-seltra/index", "Build with Seltra"),
-      page("Fuji Quickstart", "build-with-seltra/fuji-quickstart", "build-with-seltra/fuji-quickstart", "Build with Seltra"),
+      page(
+        "Testnet Quickstart",
+        "build-with-seltra/testnet-quickstart",
+        "build-with-seltra/testnet-quickstart",
+        "Build with Seltra",
+      ),
       page("Sign an Order", "build-with-seltra/sign-an-order", "build-with-seltra/sign-an-order", "Build with Seltra"),
       page("Orderbook API", "build-with-seltra/orderbook-api", "build-with-seltra/orderbook-api", "Build with Seltra"),
       page(
@@ -93,12 +124,12 @@ export const docsSections: DocSection[] = [
       page("Architecture", "contract-reference/architecture", "contract-reference/architecture", "Contract Reference"),
       page("SeltraSettlement", "contract-reference/seltrasettlement", "contract-reference/seltrasettlement", "Contract Reference"),
       page(
-        "Aggregation Router",
+        "SeltraRouter",
         "contract-reference/aggregation-router",
         "contract-reference/aggregation-router",
         "Contract Reference",
       ),
-      page("DEX Adapters", "contract-reference/dex-adapters", "contract-reference/dex-adapters", "Contract Reference"),
+      page("Adapters & Registry", "contract-reference/dex-adapters", "contract-reference/dex-adapters", "Contract Reference"),
       page(
         "Events & Errors",
         "contract-reference/events-and-errors",
@@ -124,9 +155,9 @@ export const docsSections: DocSection[] = [
         "Networks & Deployments",
       ),
       page(
-        "Fuji Deployment",
-        "networks-and-deployments/fuji-deployment",
-        "networks-and-deployments/fuji-deployment",
+        "Testnet Deployment",
+        "networks-and-deployments/testnet-deployment",
+        "networks-and-deployments/testnet-deployment",
         "Networks & Deployments",
       ),
       page(

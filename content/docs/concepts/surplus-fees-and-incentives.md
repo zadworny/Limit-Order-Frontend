@@ -1,29 +1,40 @@
 ---
 title: "Surplus, Fees & Incentives"
-description: "Surplus is value realized above the maker's signed minimum."
+description: "Surplus is value realized above the maker's signed minimum. It is split between the maker and the keeper that found the fill, and the split is part of what the maker signs."
 section: "Concepts"
-order: 8
+order: 10
 ---
 
-Surplus is value realized above the maker's signed minimum.
+Surplus is value realized above the maker's signed minimum. It exists because a mandate names a floor, not a target: a keeper that finds a better route or a better cross produces output the maker did not demand.
 
 ```
-surplus = amountOut - takingAmount
-makerImprovement = floor(surplus × makerSurplusBps / 10,000)
-keeperSide = surplus - makerImprovement
-protocolFee = floor(keeperSide × protocolFeeBps / 10,000)
-keeperReward = keeperSide - protocolFee
+surplus       = amount_out - min_out
+keeper_share  = floor(surplus * surplus_bps / 10_000)
+maker_share   = surplus - keeper_share
 ```
 
-The default maker share is **70%** of surplus. The remaining 30% creates an incentive for keepers to discover and execute favorable liquidity. The owner may update the maker share through governance.
+The maker receives `min_out + maker_share`. The keeper receives `keeper_share` as its reward for discovering and executing the fill.
 
-The protocol fee:
+## The split is signed, not chosen
 
-* is charged only against the keeper side;
-* can never reduce the maker's signed minimum or maker improvement;
-* is capped at 1,000 bps of the keeper side;
-* requires a nonzero treasury when enabled.
+`surplus_bps` is a field of the mandate, so it is covered by the maker's authorization entry. A keeper cannot widen its own share after the fact, and a service that stores mandates cannot alter the split without invalidating the signature. The default policy is a **70/30 split in the maker's favour**, matching the live EVM implementation, and a client may sign a different split when it has reason to.
 
-### Rounding
+## Why the keeper gets anything
 
-Maker improvement and protocol fees round down. Deterministic division dust remains on the keeper side. On P2P fills, the maker share is divided between the two receivers, with odd-wei dust assigned deterministically before calculating the keeper reward.
+Keepers are permissionless and unpaid unless they succeed. Each one spends RPC calls and simulation on candidates it may lose to another keeper, and pays the transaction fee for the fills it wins. A keeper share that is too small means marginal mandates never get filled; a share that is too large takes value from the maker for work the maker could not do anyway. The split is the parameter that decides which retail-size orders are worth filling at all.
+
+Stellar's fee model and five-second finality help here: small fills stay profitable for keepers on Soroban at sizes that would not clear on a chain with higher execution cost.
+
+## Rounding
+
+Integer division rounds down, and the keeper share is the rounded quantity, so any division dust stays with the maker. On P2P fills the crossed spread is divided between the two makers first, with odd-unit dust assigned deterministically, before the keeper reward is calculated. No path can round a maker below `min_out`, because `min_out` is asserted before any surplus arithmetic runs.
+
+## What surplus is not
+
+| Not this | Why |
+|---|---|
+| A protocol rebate paid by Seltra | Surplus is value the fill itself produced, not a subsidy |
+| A guarantee of price improvement | A mandate that fills exactly at `min_out` produces zero surplus, which is a correct outcome |
+| Something a keeper can manufacture | Reporting more output than was delivered fails the balance check and reverts the fill |
+
+Reported average surplus per order is a measured operating statistic rather than a protocol promise. Current measured figures for the live EVM deployment are in [Traction](../traction.md).

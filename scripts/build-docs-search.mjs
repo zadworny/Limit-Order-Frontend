@@ -11,11 +11,15 @@ const root = process.cwd();
 const contentDir = path.join(root, "content", "docs");
 const outFile = path.join(root, "public", "docs-search.json");
 
+/** Docs pages only. README/SUMMARY are publishing scaffolding, not routes. */
+const NON_PAGE_FILES = new Set(["README.md", "SUMMARY.md"]);
+
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) return walk(full);
-    return entry.name.endsWith(".mdx") ? [full] : [];
+    if (NON_PAGE_FILES.has(entry.name)) return [];
+    return entry.name.endsWith(".md") ? [full] : [];
   });
 }
 
@@ -31,7 +35,7 @@ function parseFrontmatter(raw) {
 }
 
 function routeFor(file) {
-  const rel = path.relative(contentDir, file).replace(/\.mdx$/, "");
+  const rel = path.relative(contentDir, file).replace(/\.md$/, "");
   const slug = rel.endsWith("/index") ? rel.slice(0, -"/index".length) : rel === "index" ? "" : rel;
   return slug === "" ? "/docs" : `/docs/${slug}`;
 }

@@ -1,38 +1,53 @@
 ---
 title: "Order Model"
-description: "A V1 order is exact-size and all-or-nothing."
+description: "A mandate is the signed unit of the protocol: one asset pair, a ceiling on input, a floor on output, an epoch, and an expiry."
 section: "Concepts"
-order: 4
+order: 6
 ---
 
-A V1 order is exact-size and all-or-nothing.
+A mandate is the signed unit of the protocol. It authorizes one invocation of `execute(order)` and is consumed by at most one fill.
 
-| Field           | Type      | Meaning                                             |
-| --------------- | --------- | --------------------------------------------------- |
-| `maker`         | `address` | Signer and token source                             |
-| `receiver`      | `address` | Destination for purchased assets; cannot be zero    |
-| `makerAsset`    | `address` | Token the maker sells                               |
-| `takerAsset`    | `address` | Token the maker receives                            |
-| `makingAmount`  | `uint256` | Exact amount sold                                   |
-| `takingAmount`  | `uint256` | Minimum amount accepted                             |
-| `salt`          | `uint256` | Off-chain uniqueness and bookkeeping                |
-| `epoch`         | `uint256` | Must equal the maker's current on-chain epoch       |
-| `expiry`        | `uint40`  | Unix timestamp after which the order cannot fill    |
-| `allowedSender` | `address` | Zero for any keeper; otherwise restricts submission |
-| `flags`         | `uint8`   | Reserved and required to be zero in V1              |
+## Fields
 
-### Permit consistency
+| Field | Type | Meaning |
+|---|---|---|
+| `maker` | `Address` | The account whose authorization entry authorizes the mandate, and the source of the input asset |
+| `token_in` | `Address` | SEP-41 contract address of the asset the maker sells |
+| `token_out` | `Address` | SEP-41 contract address of the asset the maker receives |
+| `amount_in` | `i128` | Ceiling on the input. The contract pulls this amount and refunds whatever the fill does not use |
+| `min_out` | `i128` | Floor the fill must clear. Asserted after routing, before any payout |
+| `epoch` | `u32` | Must equal the maker's current on-chain epoch, or the fill reverts |
+| `expiry` | `u32` | Ledger sequence after which the mandate is dead |
+| `yield_source` | `Option<Address>` | Optional allowlisted vault. `None` means funds stay in the maker's account until settlement |
+| `surplus_bps` | `u32` | Share of surplus paid to the keeper that finds the fill |
 
-The accompanying Permit2 payload is checked against the order:
+Every asset Seltra touches moves through the [SEP-41 token interface](https://developers.stellar.org/docs/tokens/token-interface), so any asset with a Soroban token contract is tradeable, including classic Stellar assets through their Stellar Asset Contract.
 
-* `permitted.token == makerAsset`
-* `permitted.amount == makingAmount`
-* `permit.deadline == order.expiry`
+## What each field protects
 
-Both assets must be enabled by the Settlement token allowlist.
+`amount_in` and `min_out` together define the price the maker will accept. A fill is legal only if the realized output is at least `min_out`; there is no separate slippage parameter and no oracle in the settlement path. The price comes from the venue quote or from the crossing mandate, and it is checked against the number the maker signed.
 
-<Callout type="warning">
+`epoch` is the cancel handle. Incrementing it invalidates every outstanding mandate for that maker at once — see [Cancellation, Expiry and Pause](./cancellation-expiry-and-pause.md).
 
-`takingAmount` is expressed in the taker token's smallest unit. Integrations must never use floating-point arithmetic for order construction.
+`expiry` is the contract-level deadline. It is checked independently of the authorization entry's own signature expiration ledger, and the effective lifetime of a mandate is the earlier of the two. See [Soroban Authorization](./soroban-authorization.md).
 
-</Callout>
+`yield_source` changes the risk profile of the mandate and is opt-in for that reason. See [Yield on Resting Capital](./yield-on-resting-capital.md).
+
+`surplus_bps` is signed, not chosen by the keeper, so a keeper cannot widen its own share after the fact. See [Surplus, Fees and Incentives](./surplus-fees-and-incentives.md).
+
+## Amounts are integers
+
+Every amount is an `i128` in the token's smallest unit, scaled by that token's decimals. Integrations must never use floating-point arithmetic to construct or compare order amounts. Crossing checks, surplus arithmetic, and the refund calculation are all integer operations, and rounding is specified rather than incidental.
+
+## What is deliberately absent
+
+| Not in the mandate | Why |
+|---|---|
+| A route, a venue, or an adapter id | The keeper picks the route in its own call frame; the maker's terms are unaffected because `min_out` is asserted after routing |
+| A counterparty address | Each maker must be able to sign without knowing who will cross them, which is what makes the P2P path work |
+| A price feed or oracle reference | Settlement reads no oracle. Price comes from the venue quote or the crossing mandate |
+| An upgrade or migration hook | The settlement contract has no upgrade entrypoint |
+
+## Validation before signing
+
+An orderbook service should reject a mandate before it ever reaches the chain if the epoch is stale, the expiry has passed, the token contracts are not both allowlisted, `min_out` is zero, or `amount_in` exceeds the maker's balance. This is a courtesy check for interface quality, not a security boundary — the contract re-checks everything it depends on, and the host re-checks the authorization.

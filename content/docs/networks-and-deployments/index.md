@@ -1,29 +1,38 @@
 ---
 title: "Networks & Deployments"
-description: "Seltra operates on Avalanche C-Chain mainnet and a public testing stack on Avalanche Fuji."
+description: "Which networks Seltra targets on Stellar, what is deployed on each today, and where the authoritative configuration lives."
 section: "Networks & Deployments"
-order: 24
+order: 30
 ---
 
-Seltra operates on Avalanche C-Chain mainnet and a public testing stack on Avalanche Fuji.
+Seltra targets Stellar Testnet first and the Stellar Public Network after an independent audit.
 
-| Environment               | Chain ID | Status                  |
-| ------------------------- | -------: | ------------------------ |
-| Avalanche C-Chain mainnet |  `43114` | Live — audit in progress |
-| Avalanche Fuji            |  `43113` | Live test deployment     |
+| Environment | Network passphrase | Status |
+|---|---|---|
+| Stellar Testnet | `Test SDF Network ; September 2015` | **Not yet deployed** — first deployment is the testnet milestone |
+| Stellar Public Network | `Public Global Stellar Network ; September 2015` | **Not yet deployed** — gated on audit remediation |
 
-<Callout type="danger">
+Nothing is live on Stellar yet. This section describes what will be published for each network and what has to be true before it is. The same settlement design does run in production on another chain today; that evidence, including its verified contract addresses, is in [Traction](../traction.md).
 
-Mainnet has passed an internal security review with zero active findings, but **the independent third-party audit has not completed**. Fuji contracts and demo tokens are for testing only — never send production assets to testnet addresses.
+## A network is a passphrase, not a chain id
 
-</Callout>
+A Soroban authorization entry commits to the network passphrase. A mandate signed for Testnet is meaningless on the Public Network, and pointing a service at the wrong one surfaces as authorization failures rather than as a clear configuration error.
 
-### Mainnet stack
+Treat the passphrase, the RPC endpoint, and the contract addresses as **one set** that changes together. See [Configuration Reference](../build-with-seltra/configuration-reference.md).
 
-Mainnet governance is a 48-hour `TimelockController` that owns Settlement, the Aggregation Router, and the DEX adapters. Four pairs are allowlisted at launch: WAVAX/USDC, WETH.e/WAVAX, BTC.b/WAVAX, and USDC/USDt, routed across the LFJ, Blackhole, and Pharaoh adapters (adapter IDs 1, 2, and 3). Native AVAX is never an order asset — the frontend wraps it into WAVAX before any order is built. See [Mainnet Status](/docs/networks-and-deployments/mainnet-status) for the full picture and [Contract Addresses](/docs/networks-and-deployments/contract-addresses) for verified addresses.
+## What gets published per network
 
-### Fuji stack
+| Item | Where |
+|---|---|
+| Contract addresses for settlement, router, registry, adapters | [Contract Addresses](./contract-addresses.md) |
+| Wasm hash for each deployed contract | [Contract Addresses](./contract-addresses.md) |
+| Allowlisted token contracts and pairs | [Contract Addresses](./contract-addresses.md) |
+| Guardian, admin, and timelock configuration | [Governance and Access Control](../contract-reference/governance-and-access-control.md) |
+| What has actually been exercised on the network | [Testnet Deployment](./testnet-deployment.md) |
+| Production readiness and what still blocks it | [Mainnet Status](./mainnet-status.md) |
 
-The Fuji deployment mirrors the intended governance shape with a Safe guardian and a 48-hour Timelock. The Safe is intentionally 1-of-1 for staging and is not a suitable production signer policy.
+Generated bindings from the deployed contract — not this documentation — are the authority on a live interface. A contract address plus its Wasm hash is what makes a deployment checkable by someone who does not trust these pages.
 
-The complete address tables and copyable environment configuration are provided in the child pages.
+## Testnet is not a preview of mainnet safety
+
+Testnet assets have no value, testnet data is periodically reset, and a testnet deployment says nothing about signer policy, key custody, monitoring, or audit status. Never send production assets to a testnet address, and never treat a testnet transaction hash as evidence of production readiness.

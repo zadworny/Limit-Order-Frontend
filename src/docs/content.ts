@@ -23,6 +23,22 @@ export interface LoadedDoc {
   toc: TocEntry[];
 }
 
+/**
+ * Docs pages cross-link with relative `.md` paths so the same source renders
+ * correctly both here and when `content/docs` is published as a standalone
+ * documentation space. Rewrite those into site routes at render time.
+ */
+export function rewriteDocLinks(body: string, file: string): string {
+  const dir = path.posix.dirname(file);
+  return body.replace(/\]\((\.\.?\/[^)\s#]*\.md)(#[^)\s]*)?\)/g, (match, href: string, hash = "") => {
+    const target = path.posix.normalize(path.posix.join(dir, href)).replace(/\.md$/, "");
+    const slug = target === "index" ? "" : target.replace(/\/index$/, "");
+    const page = pageForSlug(slug);
+    if (!page) return match;
+    return `](${slug === "" ? "/docs" : `/docs/${slug}`}${hash})`;
+  });
+}
+
 /** Mirrors rehype-slug (github-slugger) closely enough for our headings. */
 export function slugifyHeading(text: string): string {
   return text
@@ -53,7 +69,7 @@ function extractToc(body: string): TocEntry[] {
 export async function loadDoc(slug: string): Promise<LoadedDoc | null> {
   const page = pageForSlug(slug);
   if (!page) return null;
-  const filePath = path.join(process.cwd(), "content", "docs", `${page.file}.mdx`);
+  const filePath = path.join(process.cwd(), "content", "docs", `${page.file}.md`);
   let raw: string;
   try {
     raw = await readFile(filePath, "utf8");

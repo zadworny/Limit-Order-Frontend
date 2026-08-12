@@ -1,64 +1,90 @@
 ---
 title: "Welcome to Seltra"
-description: "Seltra is a hybrid limit-order protocol for Avalanche. Makers sign orders off-chain through Permit2, while permissionless keepers settle them on-chain…"
+description: "Seltra is programmable order execution on Soroban. A maker signs one bounded mandate; keepers, strategies, and agents execute inside it and cannot exceed it."
 section: "Docs"
 order: 1
 ---
 
-Seltra is a hybrid limit-order protocol for Avalanche. Makers sign orders off-chain through Permit2, while permissionless keepers settle them on-chain through either aggregated DEX liquidity or a direct peer-to-peer match.
+Seltra is programmable order execution on Soroban, Stellar's smart contract platform. A maker signs one Soroban authorization entry that fixes the asset pair, the size, the minimum output, and the expiry. Nothing moves and no fee is paid until something fills the order inside those bounds. Whatever does the filling — a permissionless keeper, a strategy, or an AI agent — cannot exceed what was signed, because the Soroban host verifies the mandate before Seltra's code runs.
 
-<Callout type="info">
+One primitive covers several products. A single mandate is a limit order. A set of mandates sharing one epoch is a grid or a DCA schedule. The same contract interface is reachable from an MCP server, so an agent can trade for a user without ever holding a key.
 
-**Current status:** Seltra is deployed on Avalanche C-Chain mainnet (chain ID `43114`) as well as on Avalanche Fuji for testing. An internal security review (Almanax) found zero active findings, but **an independent third-party audit has not completed** — see [Mainnet Status](/docs/networks-and-deployments/mainnet-status) before relying on the protocol with real funds.
+## Status
 
-</Callout>
+Read this before treating any page here as a production claim.
 
-### Why Seltra
+| Layer | State |
+|---|---|
+| Soroban settlement, router, adapters | Specified in this documentation; implementation in progress, not deployed |
+| Stellar Testnet deployment | Planned — see [Roadmap](./roadmap.md) |
+| Stellar Mainnet deployment | Planned after external audit — see [Mainnet Status](./networks-and-deployments/mainnet-status.md) |
+| Independent security audit | Not started |
+| Same settlement design, EVM implementation | Live on Avalanche C-Chain mainnet — see [Traction](./traction.md) |
 
-<CardGrid>
-  <Card icon="✍️" title="One maker signature">
-    Orders use Permit2 witness signatures. Makers do not submit an on-chain order transaction.
-  </Card>
-  <Card icon="🔀" title="Two execution paths">
-    Settle against approved AMM adapters or match two crossing makers directly.
-  </Card>
-  <Card icon="🛡️" title="Maker-protective settlement">
-    The maker always receives at least the signed minimum. Positive execution surplus is shared transparently.
-  </Card>
-  <Card icon="🧩" title="Composable contracts">
-    Integrate orders, keepers, indexers, and venue adapters through a compact on-chain interface.
-  </Card>
-</CardGrid>
+The design is not theoretical: the same two-path settlement model runs in production on another chain today, and this documentation describes how it is rebuilt natively on Soroban rather than ported. Where a page describes something that does not exist yet, it says so.
 
-### How an order moves
+## Why Seltra
+
+| Property | What it means |
+|---|---|
+| One signature, no custody | The maker authorizes one invocation. In default mode assets stay in the maker's account until the moment of settlement. |
+| Native authorization | Signature, nonce, and expiry are checked by the Soroban host. Seltra writes and audits no signature scheme at all. |
+| Two settlement paths | Fills route into Soroban AMM liquidity through an allowlisted adapter, or cross directly against another mandate with no AMM in the path. |
+| Maker-protective | Every path must return at least the signed minimum. Anything above it is surplus, split between the maker and the keeper who found it. |
+| No upgrade entrypoint | The settlement contract is deployed without one, so nobody — including Seltra — can change the code a signature points at. |
+| Bounded delegation | An agent or bot operates strictly inside the signed mandate. That bound is enforced by the platform, not by trusting the agent. |
+
+## How an order moves
 
 ```mermaid
 sequenceDiagram
     participant Maker
+    participant Wallet as Wallet
     participant API as Orderbook API
     participant Keeper
-    participant Settlement
-    participant Permit2
-    participant Liquidity as DEX or P2P Maker
+    participant Host as Soroban host
+    participant Settlement as SeltraSettlement
+    participant Liquidity as AMM or crossing mandate
 
-    Maker->>Maker: Build order and Permit2 witness
-    Maker->>API: Submit signed order
-    API-->>Keeper: Resting order
-    Keeper->>Settlement: Simulate fill
-    Settlement->>Permit2: Verify signature and consume nonce
-    Permit2->>Settlement: Transfer maker asset
-    Settlement->>Liquidity: Execute DEX route or P2P match
-    Settlement->>Maker: Signed minimum + maker improvement
+    Maker->>Wallet: Build order, sign authorization entry
+    Wallet->>API: Submit signed mandate
+    API-->>Keeper: Resting mandate
+    Keeper->>Keeper: Simulate fill against Soroban RPC
+    Keeper->>Host: Submit fill transaction
+    Host->>Host: Verify signature, nonce, expiration ledger
+    Host->>Settlement: Invoke execute inside the authorized tree
+    Settlement->>Liquidity: Route through adapter, or cross two mandates
+    Settlement->>Maker: Signed minimum plus maker surplus share
     Settlement->>Keeper: Keeper reward
 ```
 
-### Start here
+## Start here
 
-* **New to the protocol?** Read [Concepts](/docs/concepts).
-* **Building an integration?** Start with [Build with Seltra](/docs/build-with-seltra).
-* **Reviewing Solidity?** Open the [Contract Reference](/docs/contract-reference).
-* **Connecting to mainnet or Fuji?** Use [Networks & Deployments](/docs/networks-and-deployments).
-* **Trading in the app?** Read the [App Trading Guide](/docs/concepts/app-trading-guide).
-* **Evaluating risk?** Read [Security](/docs/security).
+| Need | Page |
+|---|---|
+| Understand the protocol | [Concepts](./concepts/index.md) |
+| Understand what a mandate is and what it binds | [Order Model](./concepts/order-model.md) |
+| Understand why agents can be given access safely | [Agents and MCP](./concepts/agents-and-mcp.md) |
+| Build an integration, a keeper, or an indexer | [Build with Seltra](./build-with-seltra/index.md) |
+| Read the contract interfaces | [Contract Reference](./contract-reference/index.md) |
+| Find network configuration and addresses | [Networks and Deployments](./networks-and-deployments/index.md) |
+| Trade in the app | [App Trading Guide](./concepts/app-trading-guide.md) |
+| Evaluate risk | [Security](./security/index.md) |
+| Check what is actually shipped | [Traction](./traction.md) |
+| Check what is funded and when it lands | [Roadmap](./roadmap.md) |
 
-The public source repository is available at [Seltra-Finance/Limit-Order](https://github.com/Seltra-Finance/Limit-Order).
+## Sources of truth
+
+Source code is not evidence of deployment, and a page here is not evidence that code exists. Use the narrowest source available.
+
+| Subject | Canonical source |
+|---|---|
+| Contract behaviour, auth, limits, errors | The Rust crates and their test suites in the contracts repository |
+| Deployed interface on a network | The specification of the contract deployed at that exact address |
+| Generated TypeScript client | Bindings generated from the deployed contract, not from this documentation |
+| Order validation and distribution | The orderbook service source |
+| Environment contract | [Configuration Reference](./build-with-seltra/configuration-reference.md) |
+| Deployment state and addresses | [Networks and Deployments](./networks-and-deployments/index.md) |
+| What is shipped versus planned | [Traction](./traction.md) and [Roadmap](./roadmap.md) |
+
+The public source repository is [Seltra-Finance/Limit-Order](https://github.com/Seltra-Finance/Limit-Order).

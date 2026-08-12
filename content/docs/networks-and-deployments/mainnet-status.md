@@ -1,48 +1,44 @@
 ---
 title: "Mainnet Status"
-description: "Seltra is deployed on Avalanche mainnet. An independent audit has not completed."
+description: "Seltra is not deployed on the Stellar Public Network. This page is the single source of truth for that, and for what has to be true before it is."
 section: "Networks & Deployments"
-order: 27
+order: 33
 ---
 
-Seltra **is deployed on Avalanche C-Chain mainnet** (chain ID `43114`). Source is verified on Sourcify (`exact_match`) for the Router, Settlement, and all three DEX adapters.
+**Seltra is not deployed on the Stellar Public Network.** No Stellar mainnet address exists, no independent audit has been completed, and no production keeper network is running on Stellar.
 
-<Callout type="warning">
+This page is the single source of truth for Stellar mainnet status. Do not infer deployment state from contract source, from an adapter name, from a testnet transaction, or from any other page in this documentation.
 
-Deployment and source verification are not a substitute for an independent audit. **The independent third-party audit has not completed** — treat mainnet as live but not yet fully reviewed, and size any exposure accordingly.
+## Where things actually stand
 
-</Callout>
+| Item | State |
+|---|---|
+| Soroban contracts implemented | In progress |
+| Stellar Testnet deployment | Not yet |
+| Independent security audit | Not started; SCF audit credits are earmarked for it |
+| Stellar mainnet deployment | Not yet; gated on audit remediation |
+| Production keeper network on Stellar | Not yet |
+| Signer policy and key custody for mainnet | Not established |
+| Same design, EVM implementation | Live on Avalanche C-Chain mainnet with verified source — see [Traction](../traction.md) |
 
-### What has happened
+## What has to be true before mainnet
 
-* Router, Settlement, and the LFJ / Blackhole / Pharaoh adapters are deployed and source-verified.
-* An internal automated security review (Almanax) completed with **zero active findings**.
-* Governance is live: a 48-hour `TimelockController` owns Settlement, the Router, and the adapters. Pending-owner cleanup is complete — the Timelock is the final owner.
-* Four pairs are allowlisted: `WAVAX/USDC`, `WETH.e/WAVAX`, `BTC.b/WAVAX`, `USDC/USDt`.
+1. **Independent audit and remediation**, with a public summary mapping each finding to the commit that fixed it.
+2. **Immutable settlement and router deployed** with published addresses and Wasm hashes, and the first venue adapter allowlisted behind the timelock.
+3. **A distributed signer threshold** with separated key custody, replacing the minimal staging set.
+4. **Production operations at steady state**: RPC with failover, keeper network, indexer, monitoring, and a documented incident path.
+5. **Rehearsed pause and unpause drills** against a live stack, including the proof that cancellation still works while paused.
+6. **Controlled rollout limits** — per-fill and daily notional caps — held in place until real traffic has been observed.
+7. **A published TTL and bump process**, so that no piece of protocol state can archive unnoticed.
 
-### DEX adapters
+The yield path adds its own gate: a per-vault exposure cap enforced on-chain, a documented liquidity-constrained fallback, and the vault allowlisted through the same timelock. See [Yield on Resting Capital](../concepts/yield-on-resting-capital.md).
 
-| ID | Venue              | Status                                                    |
-| -: | ------------------ | ---------------------------------------------------------- |
-|  1 | LFJ Liquidity Book | Live. Not routed for `BTC.b/WAVAX` — see the note below.   |
-|  2 | Blackhole          | Live, including `BTC.b/WAVAX`.                              |
-|  3 | Pharaoh Exchange   | Live, including `BTC.b/WAVAX`.                              |
+## What existing evidence does and does not carry over
 
-<Callout type="info">
+The Avalanche deployment is real evidence that the settlement design works with real capital, and that the team can ship and operate it. It is **not** evidence about the Soroban implementation: different language, different authorization model, different storage semantics, different venues, and a separate audit obligation.
 
-`BTC.b/WAVAX` intentionally has no LFJ liquidity route at launch. The orderbook API's quote service polls every configured venue per pair and simply omits a venue when its on-chain quote reverts (no pool, no liquidity) — the frontend's venue legend reflects this automatically and never shows LFJ for `BTC.b/WAVAX`.
+An internal automated review of the EVM contracts returned zero active findings. That is not an independent audit, it does not cover Rust, and it does not transfer to a contract that has not been written yet.
 
-</Callout>
+## When this page changes
 
-### Remaining before "audited"
-
-* **Independent smart-contract audit and remediation** — not complete.
-* Distributed Safe signer selection for anything beyond the current governance bootstrap.
-* Production RPC, keeper, indexer, monitoring, and incident-response operations at steady state.
-* Controlled rollout limits and pause-drill validation under real traffic.
-
-<Callout type="danger">
-
-Do not treat Sourcify verification, the Almanax scan, or fork test coverage as a substitute for an independent audit. This page is the single source of truth for mainnet status — do not infer deployment state from contract code, adapter IDs, or any other page.
-
-</Callout>
+This page is updated when a deployment happens, not when one is planned. Planned dates live in [Roadmap](../roadmap.md); shipped evidence lives in [Traction](../traction.md).
