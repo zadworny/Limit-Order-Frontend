@@ -5,7 +5,7 @@ section: "Docs"
 order: 3
 ---
 
-Seltra's Soroban delivery is organised into three tranches, each ending in a checkpoint that is either publicly demonstrable or not finished. Dates are targets, not claims about the past — what has actually shipped is in [Traction](./traction.md).
+Seltra's Soroban delivery is organised into three tranches, each ending in a checkpoint that is either publicly demonstrable or not finished. Dates are targets, not claims about the past - what has actually shipped is in [Traction](./traction.md).
 
 | Tranche | Target | Scope |
 |---|---|---|
@@ -15,13 +15,13 @@ Seltra's Soroban delivery is organised into three tranches, each ending in a che
 
 Total request: **$124,000** across the three tranches. Audit cost is not included in that figure; SCF audit credits are earmarked for it.
 
-## Tranche 1 — Core settlement on Soroban
+## Tranche 1 - Core settlement on Soroban
 
 *As a Stellar trader, I want to sign a limit order once and have it fill later at my price or better, without watching the chart and without giving anyone custody.*
 
 - `SeltraSettlement`, `SeltraRouter`, and the adapter interface implemented in Rust against the Soroban SDK.
 - Mandate verification through native Soroban authorization: signature, nonce, and expiry checked by the host before Seltra logic runs.
-- Both settlement paths implemented — DEX fill through a venue adapter, and P2P crossing between two mandates.
+- Both settlement paths implemented - DEX fill through a venue adapter, and P2P crossing between two mandates.
 - `min_out` enforced on every path; surplus split between maker and keeper.
 - Epoch-based cancel-all implemented and covered by tests.
 - **No upgrade entrypoint present in the deployed Wasm.**
@@ -29,7 +29,7 @@ Total request: **$124,000** across the three tranches. Audit cost is not include
 - Mandate signing wired into the orderbook API: an order signed in a wallet appears as resting and is retrievable over the public endpoint.
 - Rust test suite passing in CI, with output public in the repository.
 
-## Tranche 2 — Strategies, agents, and public testnet
+## Tranche 2 - Strategies, agents, and public testnet
 
 *As a trader or an agent acting for one, I want a standing strategy I can cancel in one action, without a custodial bot holding my funds.*
 
@@ -45,7 +45,7 @@ Total request: **$124,000** across the three tranches. Audit cost is not include
 - An AI assistant connecting to the MCP server and placing an order against testnet inside a user-signed mandate.
 - A public testnet URL where an outside user connects a wallet, signs, sees mandates resting, and cancels.
 
-## Tranche 3 — Mainnet, yield on resting capital, second venue
+## Tranche 3 - Mainnet, yield on resting capital, second venue
 
 *As a maker, I want the capital behind my open order to earn while it waits, on a protocol with an audit behind it.*
 
@@ -56,7 +56,7 @@ Total request: **$124,000** across the three tranches. Audit cost is not include
 - Per-vault exposure cap enforced on-chain.
 - Liquidity check in keeper simulation, with a documented test showing the fallback behaving as specified when redemption is constrained.
 - A second venue adapter live on mainnet with a routed fill.
-- Published architecture documentation, API reference, keeper guide, and agent integration guide — sufficient for an outside team to run its own keeper and connect its own agent.
+- Published architecture documentation, API reference, keeper guide, and agent integration guide - sufficient for an outside team to run its own keeper and connect its own agent.
 
 ## How to check a tranche is actually done
 

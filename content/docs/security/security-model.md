@@ -34,7 +34,7 @@ Seltra assumes that makers, keepers, venues, vaults, RPC providers, and governan
 | Compromised guardian | Can pause only; cannot unpause, move funds, change policy, or block cancellation |
 | Compromised admin key | Timelock delay on every policy action; no path to changing settlement code |
 | Malicious orderbook service | Can withhold or reorder mandates; cannot alter, forge, or fill one |
-| Compromised AI agent | Bounded by the mandate — can waste mandates, cannot exceed pair, size, price, or expiry |
+| Compromised AI agent | Bounded by the mandate - can waste mandates, cannot exceed pair, size, price, or expiry |
 | Problematic token behaviour | Allowlist, plus balance-delta accounting on every payout |
 | Vault insolvency or oracle manipulation | Opt-in only, exposure-capped, allowlisted, pausable; keeper skips on constrained liquidity |
 | State archival | Explicit TTL and bump strategy for epoch counters and registry entries |
@@ -53,4 +53,4 @@ Some risk is not designed away and should be stated plainly.
 
 ## What an integrator owes their users
 
-Display the exact signed terms — pair, token contract addresses, ceiling, floor, expiry, and surplus split — before requesting a signature. Show both expiries. Never present a soft orderbook delete as a completed cancellation. Surface yield mode's added counterparties at the point of choosing it. Maintain independent monitoring rather than trusting a single API's view of status.
+Display the exact signed terms - pair, token contract addresses, ceiling, floor, expiry, and surplus split - before requesting a signature. Show both expiries. Never present a soft orderbook delete as a completed cancellation. Surface yield mode's added counterparties at the point of choosing it. Maintain independent monitoring rather than trusting a single API's view of status.

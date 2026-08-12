@@ -15,10 +15,10 @@ Network passphrase: `Test SDF Network ; September 2015`
 
 | Contract | Address | Wasm hash |
 |---|---|---|
-| `SeltraSettlement` | Not deployed | — |
-| `SeltraRouter` | Not deployed | — |
-| Adapter registry | Not deployed | — |
-| First venue adapter | Not deployed | — |
+| `SeltraSettlement` | Not deployed | - |
+| `SeltraRouter` | Not deployed | - |
+| Adapter registry | Not deployed | - |
+| First venue adapter | Not deployed | - |
 
 ## Stellar Public Network
 
@@ -26,13 +26,13 @@ Network passphrase: `Public Global Stellar Network ; September 2015`
 
 | Contract | Address | Wasm hash |
 |---|---|---|
-| `SeltraSettlement` | Not deployed | — |
-| `SeltraRouter` | Not deployed | — |
-| Adapter registry | Not deployed | — |
-| Venue adapters | Not deployed | — |
-| Yield adapter | Not deployed | — |
+| `SeltraSettlement` | Not deployed | - |
+| `SeltraRouter` | Not deployed | - |
+| Adapter registry | Not deployed | - |
+| Venue adapters | Not deployed | - |
+| Yield adapter | Not deployed | - |
 
-Mainnet deployment is gated on audit remediation — see [Mainnet Status](./mainnet-status.md).
+Mainnet deployment is gated on audit remediation - see [Mainnet Status](./mainnet-status.md).
 
 ## What will be published for each entry
 
@@ -53,4 +53,4 @@ Every asset moves through its SEP-41 token contract, including classic Stellar a
 
 ## The existing production deployment
 
-The same settlement design runs today on Avalanche C-Chain with verified source. Those addresses are on a different chain, in a different address format, and are **not** Stellar deployments — they are listed as delivery evidence in [Traction](../traction.md), and nowhere else, so that no reader can confuse them with a Stellar address.
+The same settlement design runs today on Avalanche C-Chain with verified source. Those addresses are on a different chain, in a different address format, and are **not** Stellar deployments - they are listed as delivery evidence in [Traction](../traction.md), and nowhere else, so that no reader can confuse them with a Stellar address.

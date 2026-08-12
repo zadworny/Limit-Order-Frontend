@@ -24,7 +24,7 @@ flowchart LR
 |---|---|---|
 | Fill a valid mandate | Any keeper | None |
 | Cancel all own mandates | The maker | None |
-| Let a mandate expire | Nobody — it is automatic | None |
+| Let a mandate expire | Nobody - it is automatic | None |
 | Pause all fills | Guardian | None |
 | Pause one adapter or vault | Guardian | None |
 | Unpause | Admin / timelock | Delayed |
@@ -32,9 +32,9 @@ flowchart LR
 | Change token policy | Admin / timelock | Delayed |
 | Change surplus parameters | Admin / timelock | Delayed |
 | Rotate the guardian | Admin / timelock | Delayed |
-| Change the settlement code | **Nobody** | — |
+| Change the settlement code | **Nobody** | - |
 
-The last row is the one that matters most. `SeltraSettlement` has no upgrade entrypoint, so there is no governance path — delayed or otherwise — to changing the code a maker's signature points at.
+The last row is the one that matters most. `SeltraSettlement` has no upgrade entrypoint, so there is no governance path - delayed or otherwise - to changing the code a maker's signature points at.
 
 ## Guardian power is strictly negative
 
@@ -44,8 +44,8 @@ A guardian can only take capability away, and only for future fills. It cannot u
 
 | A maker's outstanding mandate | Governance effect |
 |---|---|
-| Its asset pair, size, floor, epoch, expiry, and surplus split | None — they are inside a signature already given |
-| Its ability to be cancelled | None — `increment_epoch` is never pausable |
+| Its asset pair, size, floor, epoch, expiry, and surplus split | None - they are inside a signature already given |
+| Its ability to be cancelled | None - `increment_epoch` is never pausable |
 | Its ability to expire | None |
 | Its ability to be filled | Can be paused |
 

@@ -37,7 +37,7 @@ PAIRS='{"XLM/USDC":{"base":"C...","quote":"C..."}}'
 
 ## Secret handling
 
-`KEEPER_SECRET_KEY` and `KEEPER_CHANNEL_SECRETS` belong to the keeper process alone. The orderbook API does not need them, the indexer does not need them, and the MCP server must never have them — it has no signing capability by design.
+`KEEPER_SECRET_KEY` and `KEEPER_CHANNEL_SECRETS` belong to the keeper process alone. The orderbook API does not need them, the indexer does not need them, and the MCP server must never have them - it has no signing capability by design.
 
 **Never place a secret in a `NEXT_PUBLIC_*` variable.** Those are compiled into the browser bundle and are visible to every user.
 

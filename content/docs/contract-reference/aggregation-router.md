@@ -33,7 +33,7 @@ The `min_out` assertion does **not** live here. It lives in settlement, after ro
 
 `quote` delegates to the adapter's own quote function. Some venue quoters are not read-only in the strict sense and must be evaluated through simulation rather than a plain read call; keepers and the quote API do exactly that, so a quote costs RPC work rather than a transaction.
 
-Quotes are advisory. Nothing about a quote binds the fill — the only binding number is the maker's `min_out`.
+Quotes are advisory. Nothing about a quote binds the fill - the only binding number is the maker's `min_out`.
 
 ## Availability controls
 

@@ -27,7 +27,7 @@ Expiry produces no event. Mandates that pass their expiry ledger without filling
 
 ## Storage and archival
 
-Fill records live in temporary storage with a TTL set past the mandate's expiry: long enough to prevent replay, short enough that state growth tracks active makers rather than lifetime order count. An indexer must therefore treat the absence of an on-chain fill record as *expired or never filled*, and rely on its own database — not on chain state — for historical reporting.
+Fill records live in temporary storage with a TTL set past the mandate's expiry: long enough to prevent replay, short enough that state growth tracks active makers rather than lifetime order count. An indexer must therefore treat the absence of an on-chain fill record as *expired or never filled*, and rely on its own database - not on chain state - for historical reporting.
 
 Persistent state that the protocol depends on, such as epoch counters and the adapter registry, is bumped on write and by a maintenance job. An indexer is a good place to monitor how close those entries are to archival and to alert before they lapse.
 

@@ -30,7 +30,7 @@ stateDiagram-v2
 6. **Settle.** The host verifies the signature, the nonce, and the expiration ledger, then invokes `execute` inside the authorized tree. Tokens move and the nonce is consumed atomically.
 7. **Distribute.** Settlement asserts the signed minimum, refunds any unused input, and splits surplus between the maker and the keeper.
 
-The first valid transaction to consume a mandate's nonce wins. A second keeper racing the same mandate fails on the consumed nonce — an expected, harmless outcome that costs the losing keeper a simulation, not the maker anything.
+The first valid transaction to consume a mandate's nonce wins. A second keeper racing the same mandate fails on the consumed nonce - an expected, harmless outcome that costs the losing keeper a simulation, not the maker anything.
 
 ## Key design decisions
 
@@ -76,4 +76,4 @@ Soroban storage expires. Persistent storage holds the per-maker epoch counter an
 
 ### Immutability by omission
 
-On Soroban a contract is upgradeable only if it implements an upgrade entrypoint itself. `SeltraSettlement` is deployed without one, so nobody — including Seltra — can change the code a maker's signature points at. Every fix after launch is a new deployment and a migration. That is a deliberate cost, accepted in exchange for a signature that cannot be redirected.
+On Soroban a contract is upgradeable only if it implements an upgrade entrypoint itself. `SeltraSettlement` is deployed without one, so nobody - including Seltra - can change the code a maker's signature points at. Every fix after launch is a new deployment and a migration. That is a deliberate cost, accepted in exchange for a signature that cannot be redirected.

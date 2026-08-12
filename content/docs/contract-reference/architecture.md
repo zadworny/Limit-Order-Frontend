@@ -35,12 +35,12 @@ flowchart TB
 | **Settlement** | Move tokens, assert `min_out`, refund, split surplus | Be upgraded, or hold a discretionary balance between invocations |
 | **Router** | Call registered adapters | Hold funds or user authorization |
 | **Adapter** | Translate a constrained route into venue calls | Be reached except through the router, or be added without a timelock |
-| **Guardian** | Pause fills, pause one adapter — immediately | Unpause, move funds, change policy, or block cancellation |
-| **Admin / timelock** | Registry activation, parameters, guardian rotation, unpause — after delay | Act instantly, or alter a signed mandate |
+| **Guardian** | Pause fills, pause one adapter - immediately | Unpause, move funds, change policy, or block cancellation |
+| **Admin / timelock** | Registry activation, parameters, guardian rotation, unpause - after delay | Act instantly, or alter a signed mandate |
 
 ## Why settlement sits in the middle of a P2P cross
 
-Each maker must be able to sign without knowing the counterparty, so the signed invocation tree cannot contain the other maker's address. Settlement therefore receives both inputs and pays both sides out, at the cost of two extra token movements per cross. That cost buys signatures that are independent and pre-signable — see [P2P Settlement](../concepts/p2p-settlement.md).
+Each maker must be able to sign without knowing the counterparty, so the signed invocation tree cannot contain the other maker's address. Settlement therefore receives both inputs and pays both sides out, at the cost of two extra token movements per cross. That cost buys signatures that are independent and pre-signable - see [P2P Settlement](../concepts/p2p-settlement.md).
 
 ## Resource budget
 

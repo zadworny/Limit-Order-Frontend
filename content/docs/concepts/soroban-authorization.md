@@ -1,6 +1,6 @@
 ---
 title: "Soroban Authorization"
-description: "Seltra defines no signature scheme. The Soroban host verifies the maker's authorization entry — signature, nonce, and expiration ledger — before any Seltra code runs."
+description: "Seltra defines no signature scheme. The Soroban host verifies the maker's authorization entry - signature, nonce, and expiration ledger - before any Seltra code runs."
 section: "Concepts"
 order: 7
 ---
@@ -22,10 +22,10 @@ The right-hand column is what makes a resting orderbook possible at all. A maker
 
 ## What the host checks, and Seltra does not
 
-1. **Signature validity** against the maker's account — including a contract account's `__check_auth`, so smart wallets and passkey accounts work without any Seltra-side support.
-2. **Nonce** — each entry carries a single-use nonce that the host consumes on success. A replayed entry fails at the host, never reaching contract logic.
-3. **Signature expiration ledger** — the entry is rejected after it, and the network caps how far ahead it can be set.
-4. **Invocation tree match** — the arguments in the submitted transaction must be exactly those the maker signed. A keeper that reconstructs the tree incorrectly gets its transaction rejected.
+1. **Signature validity** against the maker's account - including a contract account's `__check_auth`, so smart wallets and passkey accounts work without any Seltra-side support.
+2. **Nonce** - each entry carries a single-use nonce that the host consumes on success. A replayed entry fails at the host, never reaching contract logic.
+3. **Signature expiration ledger** - the entry is rejected after it, and the network caps how far ahead it can be set.
+4. **Invocation tree match** - the arguments in the submitted transaction must be exactly those the maker signed. A keeper that reconstructs the tree incorrectly gets its transaction rejected.
 
 Because all four checks live in the platform, the attack surface Seltra is responsible for starts *after* authentication rather than at it.
 

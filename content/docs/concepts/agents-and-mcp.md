@@ -16,7 +16,7 @@ Seltra exposes `quote`, `place`, and `cancel` to any AI tool through a Model Con
 | Operation | What it does | Signing |
 |---|---|---|
 | `quote` | Prices a candidate trade against current venue liquidity | None |
-| `place` | Submits an already-signed mandate to the orderbook | None — the mandate arrives signed |
+| `place` | Submits an already-signed mandate to the orderbook | None - the mandate arrives signed |
 | `cancel` | Requests withdrawal from the orderbook, or prepares an epoch increment for the user to sign | None |
 
 **The MCP server has no signing capability by design.** It holds no key, no seed, and no delegated signer. A mandate is signed in the user's wallet; the agent works with the result.
@@ -25,7 +25,7 @@ The quote endpoint is metered with Stellar's Machine Payments Protocol and charg
 
 ## Why this is safe to offer
 
-The safety property does not come from Seltra being careful. It comes from the platform: the Soroban host verifies the maker's authorization entry — signature, nonce, expiration ledger, and the exact invocation arguments — before any Seltra code runs.
+The safety property does not come from Seltra being careful. It comes from the platform: the Soroban host verifies the maker's authorization entry - signature, nonce, expiration ledger, and the exact invocation arguments - before any Seltra code runs.
 
 A **fully compromised agent** can waste the user's mandates by placing or cancelling badly. It cannot:
 
@@ -53,4 +53,4 @@ Bounded authority is not the same as good judgement. Within its mandate an agent
 
 ## Integration
 
-Practical setup — connecting an assistant, the tool schema, metering, and the SDK equivalents — is in [Build with Seltra](../build-with-seltra/index.md). The mandate an agent operates inside is described in [Order Model](./order-model.md), and the multi-mandate case in [Strategies](./strategies-grid-and-dca.md).
+Practical setup - connecting an assistant, the tool schema, metering, and the SDK equivalents - is in [Build with Seltra](../build-with-seltra/index.md). The mandate an agent operates inside is described in [Order Model](./order-model.md), and the multi-mandate case in [Strategies](./strategies-grid-and-dca.md).

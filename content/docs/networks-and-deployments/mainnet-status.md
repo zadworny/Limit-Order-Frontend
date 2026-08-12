@@ -19,7 +19,7 @@ This page is the single source of truth for Stellar mainnet status. Do not infer
 | Stellar mainnet deployment | Not yet; gated on audit remediation |
 | Production keeper network on Stellar | Not yet |
 | Signer policy and key custody for mainnet | Not established |
-| Same design, EVM implementation | Live on Avalanche C-Chain mainnet with verified source — see [Traction](../traction.md) |
+| Same design, EVM implementation | Live on Avalanche C-Chain mainnet with verified source - see [Traction](../traction.md) |
 
 ## What has to be true before mainnet
 
@@ -28,7 +28,7 @@ This page is the single source of truth for Stellar mainnet status. Do not infer
 3. **A distributed signer threshold** with separated key custody, replacing the minimal staging set.
 4. **Production operations at steady state**: RPC with failover, keeper network, indexer, monitoring, and a documented incident path.
 5. **Rehearsed pause and unpause drills** against a live stack, including the proof that cancellation still works while paused.
-6. **Controlled rollout limits** — per-fill and daily notional caps — held in place until real traffic has been observed.
+6. **Controlled rollout limits** - per-fill and daily notional caps - held in place until real traffic has been observed.
 7. **A published TTL and bump process**, so that no piece of protocol state can archive unnoticed.
 
 The yield path adds its own gate: a per-vault exposure cap enforced on-chain, a documented liquidity-constrained fallback, and the vault allowlisted through the same timelock. See [Yield on Resting Capital](../concepts/yield-on-resting-capital.md).

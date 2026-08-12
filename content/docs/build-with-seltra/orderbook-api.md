@@ -63,6 +63,6 @@ Interfaces must not present a soft delete as a completed cancellation. See [Canc
 
 ## Streaming
 
-`/stream` publishes mandate lifecycle events: accepted, filled, epoch-cancelled, expired, and — for yield-mode mandates — waiting on liquidity. Clients should reconnect with backoff and reconcile against `GET /orders` on reconnect rather than assuming a gapless stream.
+`/stream` publishes mandate lifecycle events: accepted, filled, epoch-cancelled, expired, and - for yield-mode mandates - waiting on liquidity. Clients should reconnect with backoff and reconcile against `GET /orders` on reconnect rather than assuming a gapless stream.
 
 Authoritative status comes from contract events, not from this API. See [Indexing and Events](./indexing-and-events.md).

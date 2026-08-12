@@ -19,16 +19,16 @@ flowchart LR
     R --> X[Cancel as one: a single epoch increment kills the strategy]
 ```
 
-1. **Configure.** Choose a grid — size, spacing, and number of levels around a price — or a DCA schedule of equal-size mandates spread over time.
+1. **Configure.** Choose a grid - size, spacing, and number of levels around a price - or a DCA schedule of equal-size mandates spread over time.
 2. **Compile.** The strategy engine turns the configuration into a set of mandates that all carry the maker's current epoch.
 3. **Sign once.** The wallet collects signatures for the whole batch in one interaction rather than one prompt per level.
 4. **Rest.** Each child mandate is an independent resting order in the orderbook.
 5. **Fill independently.** Levels fill on their own as price reaches them, through whichever settlement path pays more.
-6. **Cancel as one.** `increment_epoch()` invalidates every unfilled child at once — one transaction, not N cancellations.
+6. **Cancel as one.** `increment_epoch()` invalidates every unfilled child at once - one transaction, not N cancellations.
 
 ## Why this shape, on this platform
 
-An authorization entry carries a single-use nonce, so one mandate fills at most once. The usual pattern of a single large resting order drawn down over many partial fills is therefore not available. Slicing is not a workaround here — it is the native shape of the protocol, and the strategy engine is the thing that makes slicing ergonomic.
+An authorization entry carries a single-use nonce, so one mandate fills at most once. The usual pattern of a single large resting order drawn down over many partial fills is therefore not available. Slicing is not a workaround here - it is the native shape of the protocol, and the strategy engine is the thing that makes slicing ergonomic.
 
 Two consequences follow, and both are handled client-side:
 
@@ -41,7 +41,7 @@ Two consequences follow, and both are handled client-side:
 
 ## What a strategy cannot do
 
-Every child mandate is bound by the same rules as any other mandate, so the strategy engine — like a keeper, like an agent — cannot exceed what was signed:
+Every child mandate is bound by the same rules as any other mandate, so the strategy engine - like a keeper, like an agent - cannot exceed what was signed:
 
 | A strategy cannot | Because |
 |---|---|

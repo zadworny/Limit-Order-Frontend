@@ -44,7 +44,7 @@ The split between `execute` and the fill entrypoints exists because a Soroban au
 
 1. A maker receives at least `min_out`, or the fill reverts.
 2. Input above what the fill required is refunded to the maker in the same invocation.
-3. A mandate's nonce cannot be consumed twice — enforced by the host, not by Seltra.
+3. A mandate's nonce cannot be consumed twice - enforced by the host, not by Seltra.
 4. A mandate with a stale epoch or a passed expiry cannot fill.
 5. Settlement retains no intended token residue after a successful fill.
 6. Pausing blocks fills but never cancellation or expiry.

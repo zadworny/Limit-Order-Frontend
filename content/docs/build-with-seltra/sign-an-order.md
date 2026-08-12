@@ -5,7 +5,7 @@ section: "Build with Seltra"
 order: 18
 ---
 
-Signing a Seltra order means producing one **Soroban authorization entry** for `execute(order)`. There is no Seltra signature format, no domain separator to assemble, and no typed-data structure to get right — the host verifies the entry before Seltra's code runs.
+Signing a Seltra order means producing one **Soroban authorization entry** for `execute(order)`. There is no Seltra signature format, no domain separator to assemble, and no typed-data structure to get right - the host verifies the entry before Seltra's code runs.
 
 ## Build the order
 

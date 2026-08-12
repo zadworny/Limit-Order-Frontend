@@ -5,7 +5,7 @@ section: "Security"
 order: 34
 ---
 
-Seltra is designed so that a keeper, a strategy, or an agent can execute a maker-authorized exchange but cannot rewrite its economics. The authorization entry, the host's nonce and expiry checks, the token allowlist, the timelocked adapter registry, balance-measured accounting, and the pause controls are independent layers — and the first of them is the Soroban platform rather than Seltra's own code.
+Seltra is designed so that a keeper, a strategy, or an agent can execute a maker-authorized exchange but cannot rewrite its economics. The authorization entry, the host's nonce and expiry checks, the token allowlist, the timelocked adapter registry, balance-measured accounting, and the pause controls are independent layers - and the first of them is the Soroban platform rather than Seltra's own code.
 
 **No independent audit has been completed on either the Soroban implementation or the EVM implementation.** Nothing on this page should be read as an audit result.
 
@@ -39,7 +39,7 @@ Writing less is a security property here.
 
 ## Operational assumptions
 
-Keepers are permissionless and compete. They must simulate against current state, enforce quote freshness and rollout caps, and skip mandates they cannot fill — including yield-mode mandates whose vault cannot service redemption.
+Keepers are permissionless and compete. They must simulate against current state, enforce quote freshness and rollout caps, and skip mandates they cannot fill - including yield-mode mandates whose vault cannot service redemption.
 
 Makers should use short, intentional expiries and manage signing through trusted wallet software. Because a mandate cannot rest indefinitely, an interface that hides the real expiry is itself a risk.
 
@@ -49,5 +49,5 @@ Fee-on-transfer, rebasing, and callback-bearing tokens should not be allowlisted
 
 ## Continue
 
-- [Security Model](./security-model.md) — invariants, threats, and residual risk.
-- [Testing and Verification](./testing-and-verification.md) — what is tested, what is measured, and what none of it substitutes for.
+- [Security Model](./security-model.md) - invariants, threats, and residual risk.
+- [Testing and Verification](./testing-and-verification.md) - what is tested, what is measured, and what none of it substitutes for.

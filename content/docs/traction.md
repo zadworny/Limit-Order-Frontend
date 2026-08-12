@@ -18,7 +18,7 @@ A deployment is not a user, a test suite is not an audit, and evidence from an E
 | Stellar Public Network | Not deployed |
 | Independent audit | Not started; SCF audit credits earmarked for it |
 | Public source | [`Seltra-Finance/Limit-Order`](https://github.com/Seltra-Finance/Limit-Order) |
-| Published documentation | Architecture, concepts, API reference, keeper guide — this documentation |
+| Published documentation | Architecture, concepts, API reference, keeper guide - this documentation |
 | Live application, EVM implementation | [app.seltra.finance](https://app.seltra.finance) |
 | Public metrics page | [app.seltra.finance/stats](https://app.seltra.finance/stats) |
 
@@ -32,7 +32,7 @@ The two-path settlement model, the epoch cancel primitive, and the surplus split
 | Volume settled | $11,000+ |
 | Average additional output above the signed minimum, per filled order | ~5% |
 | Venues aggregated | 3 |
-| Custody transfers | 0 — funds move only inside a settling transaction |
+| Custody transfers | 0 - funds move only inside a settling transaction |
 
 Read these as what they are. This is a **small, early production sample over a short window**, published with its timeframe attached rather than dressed up. The average-surplus figure is an operating statistic measured across filled orders, not a rate any maker is promised; a fill exactly at the signed minimum produces zero surplus and is a correct outcome.
 
@@ -40,7 +40,7 @@ Every one of these numbers should be traceable to a transaction on a block explo
 
 ### Verified contracts backing those numbers
 
-Avalanche C-Chain, chain ID `43114`. These are **EVM addresses on a different chain**, listed here as delivery evidence. They are not Stellar deployments, and Seltra has no Stellar addresses yet — see [Contract Addresses](./networks-and-deployments/contract-addresses.md).
+Avalanche C-Chain, chain ID `43114`. These are **EVM addresses on a different chain**, listed here as delivery evidence. They are not Stellar deployments, and Seltra has no Stellar addresses yet - see [Contract Addresses](./networks-and-deployments/contract-addresses.md).
 
 | Contract | Address |
 |---|---|
@@ -61,7 +61,7 @@ Test profile and static-analysis results for that implementation are in [Testing
 |---|---|
 | The settlement design has been implemented, deployed, and operated | The Rust implementation, which is not written yet |
 | Keeper economics work at real spreads and real size | Soroban resource limits, storage archival, and channel-account submission, all untested here |
-| The team ships and runs production infrastructure | Any audit result — a Soroban audit has not started |
+| The team ships and runs production infrastructure | Any audit result - a Soroban audit has not started |
 | Documentation is complete enough for an outside integrator | Venue integrations; Soroswap, Phoenix, and Aqua adapters do not exist yet |
 
 The Soroban work is a native rebuild, not a port: native authorization replaces a custom signature scheme, the epoch replaces per-order cancellation state, and a mandate is single-shot rather than drawn down. Those differences are exactly why the EVM audit surface does not transfer. See [How Seltra Works](./concepts/how-seltra-works.md).
@@ -78,13 +78,13 @@ Useful evidence, once Stellar is live, would be:
 - keepers run by people other than Seltra, and what they earned;
 - agent-placed orders through the MCP server, and how many were placed inside a user-signed mandate rather than a test mandate;
 - strategies cancelled by one epoch increment, showing the primitive being used as designed;
-- yield-mode mandates that deposited, accrued, and settled — and how often a fill was skipped for constrained liquidity; and
+- yield-mode mandates that deposited, accrued, and settled - and how often a fill was skipped for constrained liquidity; and
 - repeat use after a first order, without inferring identity.
 
 ## What blocks a production milestone
 
 - Soroban settlement, router, and first venue adapter implemented and deployed to testnet.
-- The full testnet demonstration list, including a cancellation that succeeds while fills are paused and state that survives past its TTL window — see [Testnet Deployment](./networks-and-deployments/testnet-deployment.md).
+- The full testnet demonstration list, including a cancellation that succeeds while fills are paused and state that survives past its TTL window - see [Testnet Deployment](./networks-and-deployments/testnet-deployment.md).
 - Independent audit and public remediation.
 - Distributed signer threshold, key custody, monitoring, and a documented incident path.
 - Production keeper network run unattended, with rollout caps held in place until real traffic is observed.

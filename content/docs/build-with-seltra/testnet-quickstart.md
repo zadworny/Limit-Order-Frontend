@@ -5,7 +5,7 @@ section: "Build with Seltra"
 order: 17
 ---
 
-This is the workflow for running Seltra against Stellar Testnet. The Soroban contracts are under active implementation, so treat the command shapes here as the intended loop rather than as a record of something already published — see [Roadmap](../roadmap.md) for what lands when.
+This is the workflow for running Seltra against Stellar Testnet. The Soroban contracts are under active implementation, so treat the command shapes here as the intended loop rather than as a record of something already published - see [Roadmap](../roadmap.md) for what lands when.
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ stellar contract deploy \
   --network testnet
 ```
 
-Deploy the router and at least one venue adapter, then register the adapter through the timelocked registry. Generated bindings — not this documentation — are the authority on the deployed interface:
+Deploy the router and at least one venue adapter, then register the adapter through the timelocked registry. Generated bindings - not this documentation - are the authority on the deployed interface:
 
 ```bash
 stellar contract bindings typescript \
@@ -73,7 +73,7 @@ stellar contract bindings typescript \
 
 ## Run the services
 
-Copy the testnet environment template into your secret-managed runtime. Supply the keeper's secret key **only** to the keeper process — see [Configuration Reference](./configuration-reference.md).
+Copy the testnet environment template into your secret-managed runtime. Supply the keeper's secret key **only** to the keeper process - see [Configuration Reference](./configuration-reference.md).
 
 ```bash
 cd services

@@ -33,7 +33,7 @@ sequenceDiagram
 
 ## What the keeper controls, and what it cannot
 
-The keeper supplies only the `route` — which allowlisted adapter, and the venue-specific hop data. Everything with economic meaning comes from the signed mandate: both token contracts, the input ceiling, the minimum output, and the maker who receives the proceeds.
+The keeper supplies only the `route` - which allowlisted adapter, and the venue-specific hop data. Everything with economic meaning comes from the signed mandate: both token contracts, the input ceiling, the minimum output, and the maker who receives the proceeds.
 
 This separation exists because a Soroban authorization entry commits to exact arguments. A maker who signed at 09:00 cannot name the venue a keeper will pick at 14:00, so the route lives in the keeper's call frame rather than in the maker's signed tree. See [Soroban Authorization](./soroban-authorization.md).
 
@@ -60,4 +60,4 @@ Soroban caps CPU instructions, memory, and ledger reads and writes per transacti
 
 ## After the fill
 
-`amount_in` is a ceiling. If the fill needs less than the ceiling to satisfy the mandate, the remainder is refunded to the maker inside the same invocation — the mandate is single-shot, but not necessarily full-size. Output above `min_out` is surplus and is split according to [Surplus, Fees and Incentives](./surplus-fees-and-incentives.md).
+`amount_in` is a ceiling. If the fill needs less than the ceiling to satisfy the mandate, the remainder is refunded to the maker inside the same invocation - the mandate is single-shot, but not necessarily full-size. Output above `min_out` is surplus and is split according to [Surplus, Fees and Incentives](./surplus-fees-and-incentives.md).

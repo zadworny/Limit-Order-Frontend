@@ -26,7 +26,7 @@ Both authorization entries are consumed in that one invocation. If either signat
 
 ## Why this works natively on Soroban
 
-The P2P path needs two makers who have never met to have their signatures matched by a third party — the keeper — inside one atomic invocation. Soroban supports this directly, and it is a documented pattern rather than something Seltra invents.
+The P2P path needs two makers who have never met to have their signatures matched by a third party - the keeper - inside one atomic invocation. Soroban supports this directly, and it is a documented pattern rather than something Seltra invents.
 
 | Property | Why it matters here |
 |---|---|

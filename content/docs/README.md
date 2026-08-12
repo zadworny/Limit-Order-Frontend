@@ -2,12 +2,12 @@
 
 **Programmable order execution on Soroban.** A maker signs one Soroban authorization entry that
 fixes the asset pair, the size, the minimum output, and the expiry. Nothing moves and no fee is paid
-until something fills the order inside those bounds. Whatever fills it — a permissionless keeper, a
-grid strategy, or an AI agent — cannot exceed what was signed, because the Soroban host verifies the
+until something fills the order inside those bounds. Whatever fills it - a permissionless keeper, a
+grid strategy, or an AI agent - cannot exceed what was signed, because the Soroban host verifies the
 mandate before Seltra's code runs.
 
 Every Soroban DEX does one thing: swap now, at whatever price the pool quotes this second. Seltra
-adds the missing primitive — a resting, bounded mandate — and settles it through whichever of two
+adds the missing primitive - a resting, bounded mandate - and settles it through whichever of two
 paths pays the maker more.
 
 - **DEX path.** A keeper routes the fill into Soroban AMM liquidity through an allowlisted venue
@@ -33,7 +33,7 @@ Soroban rather than pulling liquidity out of them.
 
 The design is proven before it is funded: the two-path settlement model, the epoch cancel primitive,
 and the surplus split all run in production on Avalanche today. The Soroban work is a native rebuild,
-not a port — see [Key design decisions](concepts/how-seltra-works.md) for the places where the
+not a port - see [Key design decisions](concepts/how-seltra-works.md) for the places where the
 two platforms genuinely differ, and [Traction](traction.md) for what is inspectable now.
 
 ## Documentation
@@ -57,13 +57,13 @@ service, and the keeper live in [`Seltra-Finance/Limit-Order`](https://github.co
 | Path | What it is |
 |---|---|
 | `app/`, `src/` | Next.js 14 frontend, including the documentation site that renders `content/docs` |
-| `packages/sdk` | Client SDK — order building and hashing, typed-data assembly, wire codecs, order validation, REST and reconnecting WebSocket clients |
+| `packages/sdk` | Client SDK - order building and hashing, typed-data assembly, wire codecs, order validation, REST and reconnecting WebSocket clients |
 | `services/orderbook-api` | **Deprecated** legacy demo backend. The active orderbook API lives in `Seltra-Finance/Limit-Order` under `services/` |
 | `deploy/` | Caddyfile, systemd units, production environment templates |
 | `content/docs` | The documentation published here |
 
-The current frontend and SDK target the live EVM deployment. The Soroban client work — Stellar
-Wallets Kit signing, generated contract bindings, and the strategy engine — is Tranche 1 and
+The current frontend and SDK target the live EVM deployment. The Soroban client work - Stellar
+Wallets Kit signing, generated contract bindings, and the strategy engine - is Tranche 1 and
 Tranche 2 scope on the [Roadmap](roadmap.md).
 
 ## Development
@@ -94,4 +94,4 @@ production readiness. No independent audit has been completed on either implemen
 
 ## License
 
-No license granted yet — all rights reserved.
+No license granted yet - all rights reserved.

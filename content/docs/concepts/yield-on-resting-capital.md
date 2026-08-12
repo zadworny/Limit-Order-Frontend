@@ -7,7 +7,7 @@ order: 14
 
 The reason traders do not leave orders open is that the capital sits idle. Seltra can route the capital behind a resting mandate into an allowlisted vault so it earns until the fill, and redeem it inside the same invocation that settles the trade.
 
-This mode is **opt-in**, and it is opt-in because it genuinely changes the risk profile — not as a soft launch.
+This mode is **opt-in**, and it is opt-in because it genuinely changes the risk profile - not as a soft launch.
 
 ## Default mode versus yield mode
 
@@ -16,7 +16,7 @@ This mode is **opt-in**, and it is opt-in because it genuinely changes the risk 
 | `order.yield_source` | `None` | An allowlisted vault address |
 | Where the capital sits while resting | The maker's own account | A third-party vault |
 | Trust assumptions | The immutable settlement contract | Settlement, plus the vault, plus the underlying lending pool, plus its oracle |
-| Oracle exposure | None — settlement reads no price feed | Inherited from the vault |
+| Oracle exposure | None - settlement reads no price feed | Inherited from the vault |
 | Yield while waiting | None | Vault yield until the fill |
 
 Default mode is the default for a reason. If a maker does nothing, funds stay in the maker's account until the moment of settlement.
@@ -49,7 +49,7 @@ Seltra handles this explicitly rather than discovering it at settlement time:
 | Layer | Behaviour |
 |---|---|
 | Keeper simulation | Calls `available_liquidity` before attempting a fill and **skips** the mandate rather than submitting a reverting transaction |
-| Orderbook and interface | Shows the mandate as *waiting on liquidity* — not as filled, and not as cancelled |
+| Orderbook and interface | Shows the mandate as *waiting on liquidity* - not as filled, and not as cancelled |
 | Contract | Redemption and settlement are atomic, so a partial unwind cannot leave capital stranded mid-fill |
 
 ## Precedent and honesty

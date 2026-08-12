@@ -5,7 +5,7 @@ section: "Docs"
 order: 1
 ---
 
-Seltra is programmable order execution on Soroban, Stellar's smart contract platform. A maker signs one Soroban authorization entry that fixes the asset pair, the size, the minimum output, and the expiry. Nothing moves and no fee is paid until something fills the order inside those bounds. Whatever does the filling — a permissionless keeper, a strategy, or an AI agent — cannot exceed what was signed, because the Soroban host verifies the mandate before Seltra's code runs.
+Seltra is programmable order execution on Soroban, Stellar's smart contract platform. A maker signs one Soroban authorization entry that fixes the asset pair, the size, the minimum output, and the expiry. Nothing moves and no fee is paid until something fills the order inside those bounds. Whatever does the filling - a permissionless keeper, a strategy, or an AI agent - cannot exceed what was signed, because the Soroban host verifies the mandate before Seltra's code runs.
 
 One primitive covers several products. A single mandate is a limit order. A set of mandates sharing one epoch is a grid or a DCA schedule. The same contract interface is reachable from an MCP server, so an agent can trade for a user without ever holding a key.
 
@@ -16,10 +16,10 @@ Read this before treating any page here as a production claim.
 | Layer | State |
 |---|---|
 | Soroban settlement, router, adapters | Specified in this documentation; implementation in progress, not deployed |
-| Stellar Testnet deployment | Planned — see [Roadmap](./roadmap.md) |
-| Stellar Mainnet deployment | Planned after external audit — see [Mainnet Status](./networks-and-deployments/mainnet-status.md) |
+| Stellar Testnet deployment | Planned - see [Roadmap](./roadmap.md) |
+| Stellar Mainnet deployment | Planned after external audit - see [Mainnet Status](./networks-and-deployments/mainnet-status.md) |
 | Independent security audit | Not started |
-| Same settlement design, EVM implementation | Live on Avalanche C-Chain mainnet — see [Traction](./traction.md) |
+| Same settlement design, EVM implementation | Live on Avalanche C-Chain mainnet - see [Traction](./traction.md) |
 
 The design is not theoretical: the same two-path settlement model runs in production on another chain today, and this documentation describes how it is rebuilt natively on Soroban rather than ported. Where a page describes something that does not exist yet, it says so.
 
@@ -31,7 +31,7 @@ The design is not theoretical: the same two-path settlement model runs in produc
 | Native authorization | Signature, nonce, and expiry are checked by the Soroban host. Seltra writes and audits no signature scheme at all. |
 | Two settlement paths | Fills route into Soroban AMM liquidity through an allowlisted adapter, or cross directly against another mandate with no AMM in the path. |
 | Maker-protective | Every path must return at least the signed minimum. Anything above it is surplus, split between the maker and the keeper who found it. |
-| No upgrade entrypoint | The settlement contract is deployed without one, so nobody — including Seltra — can change the code a signature points at. |
+| No upgrade entrypoint | The settlement contract is deployed without one, so nobody - including Seltra - can change the code a signature points at. |
 | Bounded delegation | An agent or bot operates strictly inside the signed mandate. That bound is enforced by the platform, not by trusting the agent. |
 
 ## How an order moves

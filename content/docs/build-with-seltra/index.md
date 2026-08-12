@@ -50,9 +50,9 @@ The Soroban implementation is in progress. Pages in this section describe the in
 
 ## Next
 
-- [Testnet Quickstart](./testnet-quickstart.md) — toolchain, build, and deploy loop.
-- [Sign an Order](./sign-an-order.md) — building and signing a mandate.
-- [Orderbook API](./orderbook-api.md) — REST and WebSocket surface.
-- [Keeper Integration](./keeper-integration.md) — the fill loop and its safeguards.
-- [Indexing and Events](./indexing-and-events.md) — reconciling state from the chain.
-- [Configuration Reference](./configuration-reference.md) — every environment variable.
+- [Testnet Quickstart](./testnet-quickstart.md) - toolchain, build, and deploy loop.
+- [Sign an Order](./sign-an-order.md) - building and signing a mandate.
+- [Orderbook API](./orderbook-api.md) - REST and WebSocket surface.
+- [Keeper Integration](./keeper-integration.md) - the fill loop and its safeguards.
+- [Indexing and Events](./indexing-and-events.md) - reconciling state from the chain.
+- [Configuration Reference](./configuration-reference.md) - every environment variable.

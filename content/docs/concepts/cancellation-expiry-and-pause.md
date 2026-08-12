@@ -14,7 +14,7 @@ A maker has two ways out of a resting mandate, and neither depends on anyone's c
 fn increment_epoch(env: Env);
 ```
 
-Every mandate carries the epoch it was signed under, and `execute` reverts unless it matches the maker's stored value. One increment therefore invalidates the whole outstanding set in a single transaction — including a forty-level grid, which is why the epoch doubles as the strategy handle.
+Every mandate carries the epoch it was signed under, and `execute` reverts unless it matches the maker's stored value. One increment therefore invalidates the whole outstanding set in a single transaction - including a forty-level grid, which is why the epoch doubles as the strategy handle.
 
 New mandates must read and sign the updated value, which the orderbook exposes through `current_epoch(maker)`.
 
@@ -27,7 +27,7 @@ A mandate dies at the earlier of two deadlines:
 | `order.expiry`, a ledger sequence in the signed mandate | `SeltraSettlement`, at fill time |
 | The authorization entry's signature expiration ledger | The Soroban host, before contract code runs |
 
-Expiry requires no transaction and no fee from the maker. An orderbook service should remove expired mandates proactively, but the on-chain checks are authoritative — a service that keeps serving a dead mandate wastes keeper simulations, it does not create a risk for the maker.
+Expiry requires no transaction and no fee from the maker. An orderbook service should remove expired mandates proactively, but the on-chain checks are authoritative - a service that keeps serving a dead mandate wastes keeper simulations, it does not create a risk for the maker.
 
 Because the network caps how far ahead a signature expiration ledger can be set, a mandate cannot rest indefinitely. Long-dated orders are re-signed on a rolling basis by the client.
 
@@ -50,8 +50,8 @@ A guardian can stop `fill_dex` and `fill_p2p` immediately, and can pause an indi
 
 | Capability | Guardian | Admin / timelock | Maker |
 |---|---|---|---|
-| Pause fills | Yes, immediate | — | No |
+| Pause fills | Yes, immediate | - | No |
 | Unpause fills | No | Yes, delayed | No |
-| Pause one adapter | Yes, immediate | — | No |
+| Pause one adapter | Yes, immediate | - | No |
 | Cancel own mandates | No | No | Yes, immediate |
-| Prevent a maker cancelling | No | No | — |
+| Prevent a maker cancelling | No | No | - |

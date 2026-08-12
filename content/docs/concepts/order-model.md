@@ -27,7 +27,7 @@ Every asset Seltra touches moves through the [SEP-41 token interface](https://de
 
 `amount_in` and `min_out` together define the price the maker will accept. A fill is legal only if the realized output is at least `min_out`; there is no separate slippage parameter and no oracle in the settlement path. The price comes from the venue quote or from the crossing mandate, and it is checked against the number the maker signed.
 
-`epoch` is the cancel handle. Incrementing it invalidates every outstanding mandate for that maker at once — see [Cancellation, Expiry and Pause](./cancellation-expiry-and-pause.md).
+`epoch` is the cancel handle. Incrementing it invalidates every outstanding mandate for that maker at once - see [Cancellation, Expiry and Pause](./cancellation-expiry-and-pause.md).
 
 `expiry` is the contract-level deadline. It is checked independently of the authorization entry's own signature expiration ledger, and the effective lifetime of a mandate is the earlier of the two. See [Soroban Authorization](./soroban-authorization.md).
 
@@ -50,4 +50,4 @@ Every amount is an `i128` in the token's smallest unit, scaled by that token's d
 
 ## Validation before signing
 
-An orderbook service should reject a mandate before it ever reaches the chain if the epoch is stale, the expiry has passed, the token contracts are not both allowlisted, `min_out` is zero, or `amount_in` exceeds the maker's balance. This is a courtesy check for interface quality, not a security boundary — the contract re-checks everything it depends on, and the host re-checks the authorization.
+An orderbook service should reject a mandate before it ever reaches the chain if the epoch is stale, the expiry has passed, the token contracts are not both allowlisted, `min_out` is zero, or `amount_in` exceeds the maker's balance. This is a courtesy check for interface quality, not a security boundary - the contract re-checks everything it depends on, and the host re-checks the authorization.

@@ -9,8 +9,8 @@ Seltra targets Stellar Testnet first and the Stellar Public Network after an ind
 
 | Environment | Network passphrase | Status |
 |---|---|---|
-| Stellar Testnet | `Test SDF Network ; September 2015` | **Not yet deployed** — first deployment is the testnet milestone |
-| Stellar Public Network | `Public Global Stellar Network ; September 2015` | **Not yet deployed** — gated on audit remediation |
+| Stellar Testnet | `Test SDF Network ; September 2015` | **Not yet deployed** - first deployment is the testnet milestone |
+| Stellar Public Network | `Public Global Stellar Network ; September 2015` | **Not yet deployed** - gated on audit remediation |
 
 Nothing is live on Stellar yet. This section describes what will be published for each network and what has to be true before it is. The same settlement design does run in production on another chain today; that evidence, including its verified contract addresses, is in [Traction](../traction.md).
 
@@ -31,7 +31,7 @@ Treat the passphrase, the RPC endpoint, and the contract addresses as **one set*
 | What has actually been exercised on the network | [Testnet Deployment](./testnet-deployment.md) |
 | Production readiness and what still blocks it | [Mainnet Status](./mainnet-status.md) |
 
-Generated bindings from the deployed contract — not this documentation — are the authority on a live interface. A contract address plus its Wasm hash is what makes a deployment checkable by someone who does not trust these pages.
+Generated bindings from the deployed contract - not this documentation - are the authority on a live interface. A contract address plus its Wasm hash is what makes a deployment checkable by someone who does not trust these pages.
 
 ## Testnet is not a preview of mainnet safety
 

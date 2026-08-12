@@ -5,7 +5,7 @@ section: "Concepts"
 order: 4
 ---
 
-Seltra combines an off-chain orderbook with deterministic on-chain settlement. Placing an order costs a maker one wallet signature and no fee. Everything that matters — who authorized the trade, how much can move, what price is acceptable, when the authorization dies, and whether it has already been used — is enforced by the Soroban host and by `SeltraSettlement`, not by the service that stores the order.
+Seltra combines an off-chain orderbook with deterministic on-chain settlement. Placing an order costs a maker one wallet signature and no fee. Everything that matters - who authorized the trade, how much can move, what price is acceptable, when the authorization dies, and whether it has already been used - is enforced by the Soroban host and by `SeltraSettlement`, not by the service that stores the order.
 
 ## Mental model
 
@@ -48,16 +48,16 @@ Three platform facts shape everything in this section, and each has its own page
 
 | Fact | Consequence |
 |---|---|
-| The host verifies authorization before contract code runs | Seltra writes and audits no signature scheme — see [Soroban Authorization](./soroban-authorization.md) |
-| An authorization entry commits to exact arguments | The keeper's route cannot be part of what the maker signs — see [DEX Settlement](./dex-settlement.md) |
-| An authorization entry carries a single-use nonce | A mandate fills at most once; progressive execution is expressed as several mandates — see [Strategies](./strategies-grid-and-dca.md) |
+| The host verifies authorization before contract code runs | Seltra writes and audits no signature scheme - see [Soroban Authorization](./soroban-authorization.md) |
+| An authorization entry commits to exact arguments | The keeper's route cannot be part of what the maker signs - see [DEX Settlement](./dex-settlement.md) |
+| An authorization entry carries a single-use nonce | A mandate fills at most once; progressive execution is expressed as several mandates - see [Strategies](./strategies-grid-and-dca.md) |
 
 ## Read in order
 
-1. [How Seltra Works](./how-seltra-works.md) — lifecycle, and the decisions where Soroban differs from the EVM implementation.
-2. [Order Model](./order-model.md) — every field of a mandate and what it binds.
-3. [Soroban Authorization](./soroban-authorization.md) — how signing, nonces, and expiry actually work.
-4. [DEX Settlement](./dex-settlement.md) and [P2P Settlement](./p2p-settlement.md) — the two fill paths.
-5. [Surplus, Fees and Incentives](./surplus-fees-and-incentives.md) — who gets the value above the signed minimum.
-6. [Cancellation, Expiry and Pause](./cancellation-expiry-and-pause.md) — how a maker gets out.
-7. [Strategies](./strategies-grid-and-dca.md), [Agents and MCP](./agents-and-mcp.md), and [Yield on Resting Capital](./yield-on-resting-capital.md) — what the one primitive is used to build.
+1. [How Seltra Works](./how-seltra-works.md) - lifecycle, and the decisions where Soroban differs from the EVM implementation.
+2. [Order Model](./order-model.md) - every field of a mandate and what it binds.
+3. [Soroban Authorization](./soroban-authorization.md) - how signing, nonces, and expiry actually work.
+4. [DEX Settlement](./dex-settlement.md) and [P2P Settlement](./p2p-settlement.md) - the two fill paths.
+5. [Surplus, Fees and Incentives](./surplus-fees-and-incentives.md) - who gets the value above the signed minimum.
+6. [Cancellation, Expiry and Pause](./cancellation-expiry-and-pause.md) - how a maker gets out.
+7. [Strategies](./strategies-grid-and-dca.md), [Agents and MCP](./agents-and-mcp.md), and [Yield on Resting Capital](./yield-on-resting-capital.md) - what the one primitive is used to build.

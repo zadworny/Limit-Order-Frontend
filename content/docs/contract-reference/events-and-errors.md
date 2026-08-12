@@ -1,6 +1,6 @@
 ---
 title: "Events & Errors"
-description: "Contract events an indexer consumes, and the error categories an integration should expect — including the failures that are normal rather than exceptional."
+description: "Contract events an indexer consumes, and the error categories an integration should expect - including the failures that are normal rather than exceptional."
 section: "Contract Reference"
 order: 28
 ---

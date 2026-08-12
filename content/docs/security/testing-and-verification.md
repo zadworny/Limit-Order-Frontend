@@ -21,7 +21,7 @@ Two different things are described here and they should not be conflated: the **
 
 CI runs the Rust suite and the TypeScript suite on every push, with output public in the repository.
 
-The two suites worth insisting on are the archival tests and the yield fallback tests. Both cover silent failures — state that disappears after a quiet period, and capital that cannot be withdrawn when it is needed — which do not show up in ordinary happy-path testing.
+The two suites worth insisting on are the archival tests and the yield fallback tests. Both cover silent failures - state that disappears after a quiet period, and capital that cannot be withdrawn when it is needed - which do not show up in ordinary happy-path testing.
 
 ## Measured profile of the live EVM implementation
 
@@ -43,4 +43,4 @@ This is the profile recorded for the Avalanche implementation of the same design
 
 Passing tests, fork execution, coverage percentages, static analysis, and source verification are not an independent security audit. Neither is an internal automated review that returned zero active findings.
 
-**No independent audit has been completed on either implementation.** For Soroban, audit and remediation are a precondition of mainnet — see [Mainnet Status](../networks-and-deployments/mainnet-status.md), and [Traction](../traction.md) for what is inspectable today.
+**No independent audit has been completed on either implementation.** For Soroban, audit and remediation are a precondition of mainnet - see [Mainnet Status](../networks-and-deployments/mainnet-status.md), and [Traction](../traction.md) for what is inspectable today.
